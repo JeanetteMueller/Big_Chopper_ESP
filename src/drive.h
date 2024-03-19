@@ -21,7 +21,7 @@ void loopDrive()
   uint16_t minValue = 1000;
   uint16_t maxValue = 2000;
   uint16_t centerPoint = 1500;
-  int16_t maxSpeed = 120; // of 255
+  int16_t maxSpeed = 150; // of 255
 
   if (driveValueVertical < centerPoint - deadPoint || driveValueVertical > centerPoint + deadPoint)
   {
