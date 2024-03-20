@@ -11,10 +11,11 @@
 #include <IBusBM.h>
 #include <CytronMotorDriver.h>
 #include <Adafruit_PWMServoDriver.h>
-#include <Adafruit_NeoPixel.h>
+
 #include "SoftwareSerial.h"
 #include <DFPlayerMini_Fast.h>
 #include <TaskManager.h>
+#include "Lights.h"
 
 #include "definitions.h"
 
@@ -28,7 +29,7 @@
 #include "drive.h"
 #include "bodyTools.h"
 #include "domeTools.h"
-#include "lights.h"
+
 // #include "audio.h"
 
 /*
@@ -66,13 +67,42 @@ void setup()
   setupDomeRotation();
   setupDomeShake();
   setupBodyTools();
-  setupLights();
+  lights->setupLights();
   setupDomeTools();
   setupDomePeriscope();
   // setupAudio();
 }
 
 // start of loop ///////////////////////////////////////////////////////////////////////
+
+void prepareLights()
+{
+  lights->resetAllLights();
+  lights->updateLight(Lights::LightType::bodyBack, lights->backBodyLightColor);
+  lights->updateLight(Lights::LightType::bodyFront, lights->frontBodyLightColor);
+
+  // Eyes
+  if (ibusVar09 == 2000)
+  {
+    lights->updateLight(Lights::LightType::leftEyeCenter, lights->colorRed);
+  }
+  else
+  {
+    lights->updateLight(Lights::LightType::rightEye, lights->colorDefaultBlue);
+    lights->updateLight(Lights::LightType::centerEye, lights->colorDefaultBlue);
+    lights->updateLight(Lights::LightType::leftEye, lights->colorDefaultBlue);
+  }
+
+  // Periscope
+  if (ibusVar02 >= 1650 && ibusVar02 <= 2000)
+  {
+    lights->updateLight(Lights::LightType::periscope, lights->periscopeColor);
+  }
+  else
+  {
+    lights->updateLight(Lights::LightType::periscope, lights->offColor);
+  }
+}
 
 void loop()
 {
@@ -131,7 +161,8 @@ void loop()
   {
     previousMillis_100 = currentMillis;
 
-    loopLights();
+    prepareLights();
+    lights->loopLights();
 
     loopDomePeriscope();
 

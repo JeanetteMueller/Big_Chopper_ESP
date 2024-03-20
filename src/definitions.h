@@ -107,10 +107,8 @@ bool redBarFull = false;
 int16_t headServoTarget = 1500;
 
 // Lights
-Adafruit_NeoPixel *neoPixelLights;
-neoPixelType pixelFormat = NEO_GRB + NEO_KHZ800;
 #define neoPixelLightsPin (byte)1
-
+Lights *lights = new Lights(neoPixelLightsPin);
 // Audio
 // SoftwareSerial mySerial(6,5); // RX, TX
 // DFPlayerMini_Fast player;

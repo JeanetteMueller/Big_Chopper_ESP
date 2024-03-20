@@ -1,99 +1,56 @@
 
-uint8_t eyeBrightness = 128;
+#ifndef Lights_h
+#define Lights_h
 
-uint32_t offColor = neoPixelLights->Color(0, 0, 0);
+#include "Arduino.h"
+#include <Adafruit_NeoPixel.h>
 
-// grün, rot, blau
-uint32_t frontBodyLightColor = neoPixelLights->Color(0, 255, 0);
-uint32_t backBodyLightColor = neoPixelLights->Color(255, 0, 0);
-
-// rot, grün, blau
-uint32_t rightEyeColor = neoPixelLights->Color(0, 0, eyeBrightness);
-uint32_t centerEyeColor = neoPixelLights->Color(0, 0, eyeBrightness);
-uint32_t leftEyeColor = neoPixelLights->Color(0, 0, eyeBrightness);
-
-// grün, rot, blau
-uint32_t periscopeColor = neoPixelLights->Color(0, 255, 0);
-
-void setupLights()
+class Lights
 {
-  neoPixelLights = new Adafruit_NeoPixel(2 + 7 + 7 + 7 + 1, neoPixelLightsPin, pixelFormat);
-  neoPixelLights->setBrightness(0);
-  neoPixelLights->begin();
-}
+public:
+  enum LightType
+  {
+    bodyBack,
+    bodyFront,
+    rightEye,
+    rightEyeCenter,
+    centerEye,
+    centerEyeCenter,
+    leftEye,
+    leftEyeCenter,
+    periscope
+  };
 
-enum Light
-{
-  bodyBack,
-  bodyFront,
-  rightEye,
-  centerEye,
-  leftEye,
-  periscope
+  uint32_t offColor;
+
+  // grün, rot, blau
+  uint32_t frontBodyLightColor;
+  uint32_t backBodyLightColor;
+
+  // rot, grün, blau
+  uint32_t colorDefaultBlue;
+  uint32_t colorRed;
+  uint32_t colorGreen;
+  uint32_t colorBlue;
+
+  // grün, rot, blau
+  uint32_t periscopeColor;
+
+  
+
+  Lights(byte);
+  void setupLights();
+  void loopLights();
+
+  void resetAllLights();
+
+  void updateLight(LightType light, uint32_t color);
+
+private:
+  byte _pin;
+  uint16_t _ledsCount;
+  Adafruit_NeoPixel *_neoPixelLights;
+  neoPixelType pixelFormat = NEO_GRB + NEO_KHZ800;
 };
 
-void updateLight(Light light, uint32_t color)
-{
-  uint16_t startIndex = 0;
-  uint16_t length = 1;
-
-  switch (light)
-  {
-  case bodyBack:
-    startIndex = 0;
-    length = 1;
-    break;
-  case bodyFront:
-    startIndex = 1;
-    length = 1;
-    break;
-  case rightEye:
-    startIndex = 1 + 1;
-    length = 7;
-    break;
-  case centerEye:
-    startIndex = 1 + 1 + 7;
-    length = 7;
-    break;
-  case leftEye:
-    startIndex = 1 + 1 + 7 + 7;
-    length = 7;
-    break;
-  case periscope:
-    startIndex = 1 + 1 + 7 + 7 + 7;
-    length = 1;
-    break;
-  }
-
-  for (uint16_t i = startIndex; i < (startIndex + length); i++)
-  {
-    neoPixelLights->setPixelColor(i, color);
-  }
-}
-
-void loopPeriscopeLight()
-{
-  if (ibusVar02 >= 1650 && ibusVar02 <= 2000)
-  {
-    updateLight(periscope, periscopeColor);
-  }
-  else
-  {
-    updateLight(periscope, offColor);
-  }
-}
-
-void loopLights()
-{
-  updateLight(bodyBack, backBodyLightColor);
-  updateLight(bodyFront, frontBodyLightColor);
-
-  updateLight(rightEye, rightEyeColor);
-  updateLight(centerEye, centerEyeColor);
-  updateLight(leftEye, leftEyeColor);
-
-  loopPeriscopeLight();
-
-  neoPixelLights->setBrightness(150);
-  neoPixelLights->show();
-}
+#endif
