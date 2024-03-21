@@ -47,6 +47,7 @@ void WebServer::postAction(AsyncWebServerRequest *request)
     }
     request->send(200, "text/html", getPage(indexPage, request));
 }
+
 String WebServer::getPage(Page page, AsyncWebServerRequest *request)
 {
     if (request->hasParam("whatever"))

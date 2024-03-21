@@ -12,12 +12,12 @@
 
 #include <ESPAsyncWebServer.h>
 
-#include "content/styles.h"
-#include "content/javascript.h"
-#include "baseHtml.h"
+#include "webserver/content/styles.h"
+#include "webserver/content/javascript.h"
+#include "webserver/baseHtml.h"
 
-#include "pages/indexHtml.h"
-#include "pages/settingsHtml.h"
+#include "webserver/pages/indexHtml.h"
+#include "webserver/pages/settingsHtml.h"
 
 class WebServer
 {

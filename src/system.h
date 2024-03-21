@@ -24,7 +24,7 @@
 #include "classes/TankDrive.h"
 #include "classes/DomeRotation.h"
 #include "classes/Lights.h"
-#include "classes/webserver/WebServer.h"
+#include "classes/WebServer.h"
 
 #include "definitions.h"
 
