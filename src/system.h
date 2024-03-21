@@ -15,7 +15,9 @@
 #include "SoftwareSerial.h"
 #include <DFPlayerMini_Fast.h>
 #include <TaskManager.h>
-#include "Lights.h"
+#include "classes/TankDrive.h"
+#include "classes/Lights.h"
+
 
 #include "definitions.h"
 
@@ -127,20 +129,17 @@ void loop()
     previousMillis_200 = 0;
   }
 
-  initLoopDrive();
-
   loopInput();
 
   // debug();
 
-  loopDrive();
-  loopDomeRotation();
-
   if (currentMillis - previousMillis_005 >= 5)
   {
     previousMillis_005 = currentMillis;
+    
+    loopDrive();
 
-    updateDriveSpeed();
+    loopDomeRotation();
   }
 
   if (currentMillis - previousMillis_020 >= 20)

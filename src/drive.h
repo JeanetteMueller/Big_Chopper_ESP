@@ -1,4 +1,6 @@
 
+#include "Arduino.h"
+
 void setupDrive()
 {
   // set leg motors to zero
@@ -9,14 +11,11 @@ void setupDrive()
   analogWriteFreq(18000); // 18khz for less noisy motor drive
 }
 
-void initLoopDrive()
-{
-  leftMotorSpeedTarget = 0;
-  rightMotorSpeedTarget = 0;
-}
-
 void loopDrive()
 {
+  int16_t leftMotorSpeedTarget = 0;
+  int16_t rightMotorSpeedTarget = 0;
+
   uint16_t deadPoint = 5;
   uint16_t minValue = 1000;
   uint16_t maxValue = 2000;
@@ -41,14 +40,8 @@ void loopDrive()
   }
 
   // Make sure motor speeds are within range
-  leftMotorSpeedTarget = constrain(leftMotorSpeedTarget, -(maxSpeed), maxSpeed);
-  rightMotorSpeedTarget = constrain(rightMotorSpeedTarget, -(maxSpeed), maxSpeed);
-}
-
-void updateDriveSpeed()
-{
-  leftMotorSpeed = leftMotorSpeedTarget;
-  rightMotorSpeed = rightMotorSpeedTarget;
+  leftMotorSpeed = constrain(leftMotorSpeedTarget, -(maxSpeed), maxSpeed);
+  rightMotorSpeed = constrain(rightMotorSpeedTarget, -(maxSpeed), maxSpeed);
 
   Motor_Dive_Left.setSpeed(leftMotorSpeed);
   Motor_Dive_Right.setSpeed(rightMotorSpeed);

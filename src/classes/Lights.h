@@ -38,7 +38,7 @@ public:
 
   
 
-  Lights(byte);
+  Lights(byte pin, uint16_t mainBrightness);
   void setupLights();
   void loopLights();
 

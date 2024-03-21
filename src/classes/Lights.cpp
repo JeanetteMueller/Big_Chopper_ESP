@@ -1,12 +1,11 @@
-
-
 #include "Lights.h"
 
-Lights::Lights(byte pin)
+Lights::Lights(byte pin, uint16_t mainBrightness)
 {
     _pin = pin;
     _ledsCount = 2 + 7 + 7 + 7 + 1;
     _neoPixelLights = new Adafruit_NeoPixel(_ledsCount, _pin, pixelFormat);
+    _neoPixelLights->setBrightness(mainBrightness);
 
     offColor = _neoPixelLights->Color(0, 0, 0);
 
@@ -23,8 +22,6 @@ Lights::Lights(byte pin)
 
     // grün, rot, blau
     periscopeColor = _neoPixelLights->Color(0, 255, 0);
-
-
 }
 
 void Lights::setupLights()
@@ -94,6 +91,5 @@ void Lights::resetAllLights()
 
 void Lights::loopLights()
 {
-    _neoPixelLights->setBrightness(150);
     _neoPixelLights->show();
 }

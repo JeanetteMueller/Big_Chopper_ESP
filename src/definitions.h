@@ -87,8 +87,7 @@ CytronMD Motor_Dive_Right(PWM_DIR, 13, 15);
 CytronMD Motor_Dive_Left(PWM_DIR, 14, 12);
 CytronMD Motor_Dive_Dome(PWM_DIR, 0, 2);
 
-int16_t leftMotorSpeedTarget = 0;
-int16_t rightMotorSpeedTarget = 0;
+
 uint16_t driveValueHorizontal = 1500;
 uint16_t driveValueVertical = 1500;
 int16_t joystickX = 0;
@@ -108,7 +107,7 @@ int16_t headServoTarget = 1500;
 
 // Lights
 #define neoPixelLightsPin (byte)1
-Lights *lights = new Lights(neoPixelLightsPin);
+Lights *lights = new Lights(neoPixelLightsPin, 150);
 // Audio
 // SoftwareSerial mySerial(6,5); // RX, TX
 // DFPlayerMini_Fast player;
