@@ -28,7 +28,6 @@
 #include "domeRotation.h"
 #include "domeShake.h"
 #include "domePeriscope.h"
-#include "drive.h"
 #include "bodyTools.h"
 #include "domeTools.h"
 
@@ -65,7 +64,9 @@ void setup()
 
   setupInput();
 
-  setupDrive();
+  drive->setupLeftMotor(PWM_DIR, 14, 12);
+  drive->setupRightMotor(PWM_DIR, 13, 15);
+
   setupDomeRotation();
   setupDomeShake();
   setupBodyTools();
@@ -137,7 +138,7 @@ void loop()
   {
     previousMillis_005 = currentMillis;
     
-    loopDrive();
+    drive->updateMotorsWith(driveValueHorizontal, driveValueVertical, 5, 150);
 
     loopDomeRotation();
   }

@@ -83,19 +83,12 @@ Adafruit_PWMServoDriver pwm_head = Adafruit_PWMServoDriver(0x60);
 #define pwm_head_pin_15 (byte)15
 
 // Motors
-CytronMD Motor_Dive_Right(PWM_DIR, 13, 15);
-CytronMD Motor_Dive_Left(PWM_DIR, 14, 12);
-CytronMD Motor_Dive_Dome(PWM_DIR, 0, 2);
-
-
+TankDrive *drive = new TankDrive(1000, 2000, 1500);
 uint16_t driveValueHorizontal = 1500;
 uint16_t driveValueVertical = 1500;
-int16_t joystickX = 0;
-int16_t joystickY = 0;
-int16_t leftMotorSpeed = 0;
-int16_t rightMotorSpeed = 0;
 
 // Dome Rotation
+CytronMD Motor_Dive_Dome(PWM_DIR, 0, 2);
 #define deadzoneDomeXY 50 // original value is 20, this will give the motors enough power to move, add eliminate centering jitter
 bool shakeHead = false;
 const byte shakeCenter = 22; // 32 //26
