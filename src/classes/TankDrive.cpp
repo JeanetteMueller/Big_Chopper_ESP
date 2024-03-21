@@ -1,8 +1,8 @@
 #include "TankDrive.h"
 
-TankDrive::TankDrive(uint16_t inputMin, uint16_t inputMax, uint16_t inputCenter)
+TankDrive::TankDrive(int16_t inputMin, int16_t inputMax, int16_t inputCenter, uint32_t analogFrequency)
 {
-    analogWriteFreq(18000);
+    analogWriteFreq(analogFrequency);
 
     _inputMin = inputMin;
     _inputMax = inputMax;
@@ -22,8 +22,11 @@ void TankDrive::setupRightMotor(MODE mode, uint8_t pin1, uint8_t pin2)
     _motorRight->setSpeed(_speedRight);
 }
 
-void TankDrive::updateMotorsWith(uint16_t horizontal, uint16_t vertical, uint16_t deadPoint, int16_t maxSpeed)
-{
+void TankDrive::updateMotorsWith(int16_t horizontalValue, int16_t verticalValue, uint16_t deadPoint, int16_t maxSpeed)
+{   
+    int16_t horizontal = constrain(horizontalValue, _inputMin, _inputMax);
+    int16_t vertical = constrain(verticalValue, _inputMin, _inputMax);
+
     int16_t leftMotorSpeedTarget = 0;
     int16_t rightMotorSpeedTarget = 0;
 
