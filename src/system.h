@@ -68,12 +68,10 @@ void setup()
 
   domeRotation->setupMotor(PWM_DIR, 0, 2);
 
-  setupDomeRotation();
   setupDomeShake();
   setupBodyTools();
   lights->setupLights();
   setupDomeTools();
-  setupDomePeriscope();
   // setupAudio();
 }
 

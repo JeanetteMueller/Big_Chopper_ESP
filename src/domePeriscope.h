@@ -5,11 +5,6 @@ double maxPeriscopeRotation = 0;
 double minPeriscopeLift = 78;
 double maxPeriscopeLift = 170;
 
-void setupDomePeriscope()
-{
-
-}
-
 void loopDomePeriscope()
 {
 

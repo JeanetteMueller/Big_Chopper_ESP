@@ -18,9 +18,16 @@ void DomeRotation::setupMotor(MODE mode, uint8_t pin1, uint8_t pin2)
 
 void DomeRotation::updateMotorWith(int16_t value, uint16_t deadPoint, int16_t maxSpeed)
 {
-    int16_t rotationSpeed = map(value, _inputMin, _inputMax, maxSpeed, -(maxSpeed));
+    if (value >= _inputMin && value <= _inputMax)
+    {
+        int16_t rotationSpeed = map(value, _inputMin, _inputMax, maxSpeed, -(maxSpeed));
 
-    _motor->setSpeed(rotationSpeed);
+        _motor->setSpeed(rotationSpeed);
+    }
+    else
+    {
+        stop();
+    }
 }
 
 void DomeRotation::stop()
