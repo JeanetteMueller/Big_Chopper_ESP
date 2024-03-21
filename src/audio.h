@@ -39,12 +39,13 @@ void loopAudio()
 	if (player.isPlaying())
 	{
 		Serial.println(F("player is playing"));
-		shakeHead = true;
+		domeShake->shakeStart();
+
 		previousMillisAudio = currentMillis;
 	}
 	else
 	{
-		shakeHead = false;
+		domeShake->shakeStop();
 	}
 
 	if (ibusVar06 > 1750 || ibusVar06 == 0)
@@ -84,7 +85,7 @@ void loopAudio()
 
 					audioPause = 2000 + (random(10, 50) * 100);
 
-					shakeHead = true;
+					domeShake->shakeStart();
 				}
 			}
 		}

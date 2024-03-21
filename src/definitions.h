@@ -88,16 +88,7 @@ int16_t driveValueHorizontal = 1500;
 int16_t driveValueVertical = 1500;
 
 // Dome Rotation
-DomeRotation *domeRotation = new DomeRotation();
-DomeShake *domeShake = new DomeShake();
-
-CytronMD Motor_Dive_Dome(PWM_DIR, 0, 2);
-#define deadzoneDomeXY 50 // original value is 20, this will give the motors enough power to move, add eliminate centering jitter
-bool shakeHead = false;
-const byte shakeCenter = 22; // 32 //26
-const byte shakeDistance = 3;
-byte shakeHeadPosition = 1;
-int16_t headServoTarget = 1500;
+DomeRotation *domeRotation = new DomeRotation(1000, 2000, 1500);
 
 // Lights
 #define neoPixelLightsPin (byte)1

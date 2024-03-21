@@ -30,7 +30,7 @@ void loopDomePeriscope()
       rotateServoToDegree(pwm_head, pwm_head_pin_periscope_rotate, rotationPeriscope);
     }
 
-    Motor_Dive_Dome.setSpeed(0);
+    domeRotation->stop();
   }
   else
   {

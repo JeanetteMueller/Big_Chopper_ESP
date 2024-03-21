@@ -1,6 +1,6 @@
 void setupDomeRotation()
 {
-  Motor_Dive_Dome.setSpeed(0);
+  domeRotation->stop();
 }
 void loopDomeRotation()
 {
@@ -15,14 +15,12 @@ void loopDomeRotation()
   {
     if (ibusVar03 >= 1000 && ibusVar03 <= 2000)
     {
-      int16_t degree = constrain(ibusVar03, 1000, 2000);
-      int16_t rotationSpeed = map(degree, 1000, 2000, 255, -255);
-
-      Motor_Dive_Dome.setSpeed(rotationSpeed);
+      
+      domeRotation->updateMotorWith(ibusVar03, 5);
     }
     else
     {
-      Motor_Dive_Dome.setSpeed(0);
+      domeRotation->stop();
     }
   }
 }

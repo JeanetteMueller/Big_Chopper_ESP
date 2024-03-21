@@ -16,7 +16,7 @@ public:
     void setupLeftMotor(MODE mode, uint8_t pin1, uint8_t pin2);
     void setupRightMotor(MODE mode, uint8_t pin1, uint8_t pin2);
 
-    void updateMotorsWith(int16_t horizontalValue, int16_t verticalValue, uint16_t deadPoint, int16_t maxSpeedy);
+    void updateMotorsWith(int16_t horizontalValue, int16_t verticalValue, uint16_t deadPoint, int16_t maxSpeed = 255);
     void stop();
 
 private:

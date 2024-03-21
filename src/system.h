@@ -9,7 +9,6 @@
 #define SERIAL_PORT_SPEED 115200 // Define the port output serial communication speed
 
 #include <IBusBM.h>
-#include <CytronMotorDriver.h>
 #include <Adafruit_PWMServoDriver.h>
 
 #include "SoftwareSerial.h"
@@ -17,9 +16,7 @@
 #include <TaskManager.h>
 #include "classes/TankDrive.h"
 #include "classes/DomeRotation.h"
-#include "classes/DomeShake.h"
 #include "classes/Lights.h"
-
 
 #include "definitions.h"
 
@@ -68,6 +65,8 @@ void setup()
 
   drive->setupLeftMotor(PWM_DIR, 14, 12);
   drive->setupRightMotor(PWM_DIR, 13, 15);
+
+  domeRotation->setupMotor(PWM_DIR, 0, 2);
 
   setupDomeRotation();
   setupDomeShake();
