@@ -6,6 +6,13 @@
 #include <Wire.h>
 #include "searchI2cPorts.h"
 
+#ifdef ESP32
+#include <WiFi.h>
+#include <AsyncTCP.h>
+#elif defined(ESP8266)
+#include <ESP8266WiFi.h>
+#endif
+
 #define SERIAL_PORT_SPEED 115200 // Define the port output serial communication speed
 
 #include <IBusBM.h>
@@ -17,8 +24,11 @@
 #include "classes/TankDrive.h"
 #include "classes/DomeRotation.h"
 #include "classes/Lights.h"
+#include "classes/webserver/WebServer.h"
 
 #include "definitions.h"
+
+#include "Wifi.h"
 
 #include "functions.h"
 #include "debug.h"
@@ -62,6 +72,9 @@ void setup()
   pwm_head.setPWMFreq(SERVO_FREQ);
 
   setupInput();
+
+  setupWifi();
+  webServer->setup();
 
   drive->setupLeftMotor(PWM_DIR, 14, 12);
   drive->setupRightMotor(PWM_DIR, 13, 15);
@@ -129,6 +142,8 @@ void loop()
     previousMillis_200 = 0;
   }
 
+  loopWifi();
+
   loopInput();
 
   // debug();
@@ -136,7 +151,7 @@ void loop()
   if (currentMillis - previousMillis_005 >= 5)
   {
     previousMillis_005 = currentMillis;
-    
+
     drive->updateMotorsWith(driveValueHorizontal, driveValueVertical, 5, 150);
 
     loopDomeRotation();

@@ -5,6 +5,7 @@
         "__bit_reference": "cpp",
         "initializer_list": "cpp",
         "string": "cpp",
-        "string_view": "cpp"
+        "string_view": "cpp",
+        "variant": "cpp"
     }
 }

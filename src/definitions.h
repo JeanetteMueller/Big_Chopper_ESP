@@ -6,6 +6,19 @@ unsigned long previousMillis_020 = 0;
 unsigned long previousMillis_100 = 0;
 unsigned long previousMillis_200 = 0;
 
+// Wifi Settings
+#define WiFiMode 0
+// #define WiFiMode 1
+#define WifiSsid "ChopperWifiControl" // <- change if needed
+// #define WifiSsid "Yavin4" // <- change if needed
+#define WifiPassword "<YOUR WIFI PASSWORD>"
+// #define WifiPassword "29833170985536833475"
+IPAddress apIP(192, 168, 10, 1);
+#define ServerPort 80
+
+WebServer *webServer = new WebServer(ServerPort);
+
+
 // RC values coming from the iBUS RC-Reciever
 IBusBM *IBus = new IBusBM();
 uint16_t ibusVar00 = 0;
