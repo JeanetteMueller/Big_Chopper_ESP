@@ -8,33 +8,29 @@ WebServer::WebServer(uint32_t port)
 void WebServer::setup()
 {
     _server->on("/", HTTP_POST, [&](AsyncWebServerRequest *request)
-    {
-        postAction(request);
-    });
+                { postAction(request); });
 
     _server->on("/", HTTP_GET, [&](AsyncWebServerRequest *request)
-               { request->send(200, "text/html", getPage(indexPage, request)); });
+                { request->send(200, "text/html", getPage(indexPage, request)); });
 
     _server->on("/styles.css", HTTP_GET, [&](AsyncWebServerRequest *request)
-               { request->send(200, "text/css", getContent(stylesContent)); });
+                { request->send(200, "text/css", getContent(stylesContent)); });
 
     _server->on("/javascript.js", HTTP_GET, [&](AsyncWebServerRequest *request)
-               { request->send(200, "text/text", getContent(javascriptContent)); });
+                { request->send(200, "text/text", getContent(javascriptContent)); });
 
     _server->on("/index.html", HTTP_GET, [&](AsyncWebServerRequest *request)
-               { request->send(200, "text/html", getPage(indexPage, request)); });
+                { request->send(200, "text/html", getPage(indexPage, request)); });
 
     _server->on("/settings.html", HTTP_GET, [&](AsyncWebServerRequest *request)
-               { request->send(200, "text/html", getPage(settingsPage, request)); });
+                { request->send(200, "text/html", getPage(settingsPage, request)); });
 
     _server->onNotFound([&](AsyncWebServerRequest *request)
-    {
-        notFound(request);
-    });
+                        { notFound(request); });
 
     _server->begin();
 }
- 
+
 void WebServer::postAction(AsyncWebServerRequest *request)
 {
     Serial.println("ACTION!");

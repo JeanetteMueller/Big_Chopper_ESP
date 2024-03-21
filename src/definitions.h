@@ -18,7 +18,6 @@ IPAddress apIP(192, 168, 10, 1);
 
 WebServer *webServer = new WebServer(ServerPort);
 
-
 // RC values coming from the iBUS RC-Reciever
 IBusBM *IBus = new IBusBM();
 uint16_t ibusVar00 = 0;
