@@ -82,25 +82,27 @@ Adafruit_PWMServoDriver pwm_head = Adafruit_PWMServoDriver(0x60);
 #define pwm_head_pin_14 (byte)14
 #define pwm_head_pin_15 (byte)15
 
-// Motors
+// Driving
 TankDrive *drive = new TankDrive(1000, 2000, 1500);
-uint16_t driveValueHorizontal = 1500;
-uint16_t driveValueVertical = 1500;
+int16_t driveValueHorizontal = 1500;
+int16_t driveValueVertical = 1500;
 
 // Dome Rotation
+DomeRotation *domeRotation = new DomeRotation();
+DomeShake *domeShake = new DomeShake();
+
 CytronMD Motor_Dive_Dome(PWM_DIR, 0, 2);
 #define deadzoneDomeXY 50 // original value is 20, this will give the motors enough power to move, add eliminate centering jitter
 bool shakeHead = false;
 const byte shakeCenter = 22; // 32 //26
 const byte shakeDistance = 3;
 byte shakeHeadPosition = 1;
-byte redBarPosition = 0;
-bool redBarFull = false;
 int16_t headServoTarget = 1500;
 
 // Lights
 #define neoPixelLightsPin (byte)1
 Lights *lights = new Lights(neoPixelLightsPin, 150);
+
 // Audio
 // SoftwareSerial mySerial(6,5); // RX, TX
 // DFPlayerMini_Fast player;

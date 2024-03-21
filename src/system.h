@@ -16,6 +16,8 @@
 #include <DFPlayerMini_Fast.h>
 #include <TaskManager.h>
 #include "classes/TankDrive.h"
+#include "classes/DomeRotation.h"
+#include "classes/DomeShake.h"
 #include "classes/Lights.h"
 
 
