@@ -5,7 +5,7 @@ WebServer::WebServer(uint32_t port)
     _server = new AsyncWebServer(port);
 }
 
-void WebServer::setup()
+void WebServer::start()
 {
     _server->on("/", HTTP_POST, [&](AsyncWebServerRequest *request)
                 { postAction(request); });

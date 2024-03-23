@@ -35,7 +35,7 @@ public:
     };
 
     WebServer(uint32_t port);
-    void setup();
+    void start();
 
 private:
     AsyncWebServer *_server;

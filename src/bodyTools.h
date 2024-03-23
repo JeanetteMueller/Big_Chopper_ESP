@@ -21,31 +21,6 @@ void setupLeftBodyArm()
   bodyLeftArmTaskManager.addTask(new MoveServoTask(pwm_body, pwm_body_pin_left_action, max_action_left, default_action_left, 200, 400));
   bodyLeftArmTaskManager.addTask(new MoveServoTask(pwm_body, pwm_body_pin_left_action, default_action_left, max_action_left, 200, 200));
 
-  // FuncTask *func = new FuncTask([](FuncTask *task){
-  //   Serial.print("Task State: ");
-
-  //   switch (task->getState()) {
-  //     case FuncTask::State::none:
-  //       Serial.println("NONE");
-  //       break;
-  //     case FuncTask::State::running:
-  //       Serial.println("RUNNING");
-  //       break;
-  //     case FuncTask::State::done:
-  //       Serial.println("DONE");
-  //       break;
-  //   }
-
-  //   task->count = task->count + 1;
-
-  //   if (task->count > 5) {
-  //     return Task::State::done;
-  //   }
-  //   return Task::State::running;
-  // });
-
-  // bodyLeftArmTaskManager.addTask(func);
-
   // react on Switch to Bring all in
   bodyLeftArmTaskManager.addTask(new InputTask(IBus, RC_SWITCH_LEFT_OUT, 1000));
   // move tool to retracted position
