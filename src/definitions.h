@@ -1,4 +1,6 @@
 
+bool enableLight = false;
+
 // TIME
 unsigned long currentMillis; // time current
 unsigned long previousMillis_005 = 0;

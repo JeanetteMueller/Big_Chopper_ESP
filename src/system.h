@@ -40,6 +40,8 @@
 #include "bodyTools.h"
 #include "domeTools.h"
 
+// #include "test.h"
+
 // #include "audio.h"
 
 /*
@@ -74,7 +76,7 @@ void setup()
   setupInput();
 
   setupWifi();
-  webServer->setup();
+  webServer->start();
 
   drive->setupLeftMotor(PWM_DIR, 14, 12);
   drive->setupRightMotor(PWM_DIR, 13, 15);
@@ -83,9 +85,15 @@ void setup()
 
   setupDomeShake();
   setupBodyTools();
-  lights->setupLights();
+  if (enableLight)
+  {
+    lights->setupLights();
+  }
   setupDomeTools();
+
   // setupAudio();
+
+  // setupTest();
 }
 
 // start of loop ///////////////////////////////////////////////////////////////////////
@@ -169,19 +177,29 @@ void loop()
     domeLeftArmTaskManager.loop();
     loopDomeArms();
     domeShakeTaskManager.loop();
+
+    
   }
 
   if (currentMillis - previousMillis_100 >= 100)
   {
     previousMillis_100 = currentMillis;
 
-    prepareLights();
-    lights->loopLights();
-
+    if (enableLight)
+    {
+      prepareLights();
+      lights->loopLights();
+    }
     loopDomePeriscope();
 
     // loopAudio();
     // Serial.print( stack_unused() ); Serial.print(F(" -> ")); Serial.println( stack_free() );
+
+    // testTaskManager.loop();
+
+    // Serial.print("globalBool is: ");
+    // // bool globalBoolValue = *globalBool;
+    // Serial.println(globalBool == true ? "-----------------true" : "-----------------false");
   }
 }
 

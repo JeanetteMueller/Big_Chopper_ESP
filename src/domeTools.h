@@ -1,4 +1,7 @@
 
+bool rightArmIsReady = false;
+bool leftArmIsReady = false;
+
 // Doors
 double leftArmDoor_min = 170;
 double leftArmDoor_max = 0;
@@ -47,12 +50,13 @@ void setupRightArmTools()
   domeRightArmTaskManager.addTask(new MoveServoTask(pwm_head, pwm_head_pin_arms_right_rotate, rightArmRotate_doorsafe, rightArmRotate_min, 300, 200));
   // bring arm out
   domeRightArmTaskManager.addTask(new MoveServoTask(pwm_head, pwm_head_pin_arms_right_extruder, rightArmExtruder_min, rightArmExtruder_max, 800, 500));
-  // stretch arm to max
-  domeRightArmTaskManager.addTask(new MoveServoTask(pwm_head, pwm_head_pin_arms_right_extend, rightArmExtend_min, current_extendRightArm, 400)); // 110
-
+  // stretch arm to current position
+  // domeRightArmTaskManager.addTask(new MoveServoTask(pwm_head, pwm_head_pin_arms_right_extend, rightArmExtend_min, current_extendRightArm, 400)); // 110
+  domeRightArmTaskManager.addTask(new ChangeBoolTask(&rightArmIsReady, true));
   // wait here to bring right arm in and close doors
   // check if arm is vertical
   domeRightArmTaskManager.addTask(new InputTask(IBus, RC_TURN_RIGHT, 1000));
+  domeRightArmTaskManager.addTask(new ChangeBoolTask(&rightArmIsReady, false));
   // stretch arm to min
   domeRightArmTaskManager.addTask(new MoveServoTask(pwm_head, pwm_head_pin_arms_right_extend, current_extendRightArm, rightArmExtend_min, 500));
   // rotate arm to center
@@ -80,12 +84,13 @@ void setupLeftArmTools()
   domeLeftArmTaskManager.addTask(new MoveServoTask(pwm_head, pwm_head_pin_arms_left_rotate, leftArmRotate_doorsafe, leftArmRotate_min, 300, 200));
   // bring arm out
   domeLeftArmTaskManager.addTask(new MoveServoTask(pwm_head, pwm_head_pin_arms_left_extruder, leftArmExtruder_min, leftArmExtruder_max, 800, 500));
-  // stretch arm to max
-  domeLeftArmTaskManager.addTask(new MoveServoTask(pwm_head, pwm_head_pin_arms_left_extend, leftArmExtend_min, current_extendLeftArm, 400)); // 110
-
+  // stretch arm to current position
+  // domeLeftArmTaskManager.addTask(new MoveServoTask(pwm_head, pwm_head_pin_arms_left_extend, leftArmExtend_min, current_extendLeftArm, 400)); // 110
+  domeLeftArmTaskManager.addTask(new ChangeBoolTask(&leftArmIsReady, true));
   // wait here to bring left arm in and close doors
   // check if arm is vertical
   domeLeftArmTaskManager.addTask(new InputTask(IBus, RC_TURN_LEFT, 1000));
+  domeLeftArmTaskManager.addTask(new ChangeBoolTask(&leftArmIsReady, false));
   // stretch arm to min
   domeLeftArmTaskManager.addTask(new MoveServoTask(pwm_head, pwm_head_pin_arms_left_extend, current_extendLeftArm, leftArmExtend_min, 500));
   // rotate arm to center
@@ -104,13 +109,13 @@ void setupDomeTools()
 }
 void loopDomeArms()
 {
-  if (ibusVar05 >= 1200 && ibusVar05 <= 2000)
+  if (rightArmIsReady == true && ibusVar05 >= 1200 && ibusVar05 <= 2000)
   {
     current_extendRightArm = map(ibusVar05, 1200, 2005, rightArmExtend_min, rightArmExtend_max);
     rotateServoToDegree(pwm_head, pwm_head_pin_arms_right_extend, current_extendRightArm);
   }
 
-  if (ibusVar04 >= 1200 && ibusVar04 <= 2000)
+  if (leftArmIsReady == true && ibusVar04 >= 1200 && ibusVar04 <= 2000)
   {
     current_extendLeftArm = map(ibusVar04, 1200, 2005, leftArmExtend_min, leftArmExtend_max);
     rotateServoToDegree(pwm_head, pwm_head_pin_arms_left_extend, current_extendLeftArm);
