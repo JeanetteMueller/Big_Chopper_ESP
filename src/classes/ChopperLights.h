@@ -37,7 +37,7 @@ public:
   // grün, rot, blau
   uint32_t periscopeColor;
 
-  ChopperLights(byte pin, uint16_t mainBrightness);
+  ChopperLights(byte pin, uint16_t brightness);
   void setupLights();
   void loopLights();
 
@@ -57,6 +57,7 @@ private:
 
   byte _pin;
   uint16_t _ledsCount;
+  uint16_t _brightness;
   Adafruit_NeoPixel *_neoPixelLights;
   neoPixelType pixelFormat = NEO_GRB + NEO_KHZ800;
 };

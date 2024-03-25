@@ -13,18 +13,16 @@ void setupLeftBodyArm()
   // Door Open
   bodyLeftArmTaskManager.addTask(new MoveServoTask(pwm_body, pwm_body_pin_left_door, default_door_left, max_door_left, 200, 200));
   // Bring Tool out
-  bodyLeftArmTaskManager.addTask(new MoveServoTask(pwm_body, pwm_body_pin_left_toollift, default_toollift_left, max_toollift_left, 300));
-  // Wait
-  bodyLeftArmTaskManager.addTask(new WaitTask(0.5));
+  bodyLeftArmTaskManager.addTask(new MoveServoTask(pwm_body, pwm_body_pin_left_toollift, default_toollift_left, max_toollift_left, 800));
   // Use Tool
   bodyLeftArmTaskManager.addTask(new MoveServoTask(pwm_body, pwm_body_pin_left_action, default_action_left, max_action_left, 200, 400));
   bodyLeftArmTaskManager.addTask(new MoveServoTask(pwm_body, pwm_body_pin_left_action, max_action_left, default_action_left, 200, 400));
-  bodyLeftArmTaskManager.addTask(new MoveServoTask(pwm_body, pwm_body_pin_left_action, default_action_left, max_action_left, 200, 200));
+  bodyLeftArmTaskManager.addTask(new MoveServoTask(pwm_body, pwm_body_pin_left_action, default_action_left, max_action_left, 200, 400));
 
   // react on Switch to Bring all in
   bodyLeftArmTaskManager.addTask(new InputTask(IBus, RC_SWITCH_LEFT_OUT, 1000));
   // move tool to retracted position
-  bodyLeftArmTaskManager.addTask(new MoveServoTask(pwm_body, pwm_body_pin_left_action, max_action_left, default_action_left, 200, 500));
+  bodyLeftArmTaskManager.addTask(new MoveServoTask(pwm_body, pwm_body_pin_left_action, max_action_left, default_action_left, 200, 400));
   // Bring Tool in
   bodyLeftArmTaskManager.addTask(new MoveServoTask(pwm_body, pwm_body_pin_left_toollift, max_toollift_left, default_toollift_left, 300, 500));
   // Door close
@@ -46,7 +44,7 @@ void setupRightBodyArm()
   // open door
   bodyRightArmTaskManager.addTask(new MoveServoTask(pwm_body, pwm_body_pin_right_door, default_door_right, max_door_right, 200, 200));
   // bring tool out
-  bodyRightArmTaskManager.addTask(new MoveServoTask(pwm_body, pwm_body_pin_right_toollift, default_toollift_right, max_toollift_right, 300, 1000));
+  bodyRightArmTaskManager.addTask(new MoveServoTask(pwm_body, pwm_body_pin_right_toollift, default_toollift_right, max_toollift_right, 300, 600));
   // Use tool, rotate Saw
   bodyRightArmTaskManager.addTask(new MoveServoTask(pwm_body, pwm_body_pin_right_action, default_action_right, max_action_right, 200, 200));
 

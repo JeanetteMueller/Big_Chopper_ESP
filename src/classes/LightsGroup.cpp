@@ -15,7 +15,7 @@ void LightsGroup::setColor(uint32_t color)
     }
 }
 
-void LightsGroup::setColor(uint32_t color, uint16_t index)
+void LightsGroup::setColorOnIndex(uint32_t color, uint16_t index)
 {
-    _neoPixelLights->setPixelColor(_startIndex+index, color);
+    _neoPixelLights->setPixelColor(_startIndex + index, color);
 }
