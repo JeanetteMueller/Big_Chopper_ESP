@@ -59,7 +59,7 @@ void setupRightBodyArm()
 }
 
 double default_utility_gripper = 120;
-double max_utility_gripper = 40;
+double max_utility_gripper = 65;
 
 void setupUtilityArm()
 {
@@ -68,13 +68,13 @@ void setupUtilityArm()
 
   bodyUtilityArmTaskManager.addTask(new InputTask(IBus, RC_SWITCH_RIGHT_IN, 1500, 2000));
   // bring arm out
-  bodyUtilityArmTaskManager.addTask(new MoveServoTask(pwm_body, pwm_body_pin_utilityarm, default_utility_arm, max_utility_arm, 1000));
+  bodyUtilityArmTaskManager.addTask(new MoveServoTask(pwm_body, pwm_body_pin_utilityarm, default_utility_arm, max_utility_arm, 800));
 
   bodyUtilityArmTaskManager.addTask(new InputTask(IBus, RC_SWITCH_RIGHT_IN, 1000));
   // close gripper
-  bodyUtilityArmTaskManager.addTask(new MoveServoTask(pwm_body, pwm_body_pin_utilityarmgripper, max_utility_gripper, default_utility_gripper, 0, 100));
+  bodyUtilityArmTaskManager.addTask(new MoveServoTask(pwm_body, pwm_body_pin_utilityarmgripper, default_utility_gripper, default_utility_gripper, 0, 50));
   // bring arm in
-  bodyUtilityArmTaskManager.addTask(new MoveServoTask(pwm_body, pwm_body_pin_utilityarm, max_utility_arm, default_utility_arm, 1000));
+  bodyUtilityArmTaskManager.addTask(new MoveServoTask(pwm_body, pwm_body_pin_utilityarm, max_utility_arm, default_utility_arm, 700));
 }
 
 void setupUtilityGripper()
