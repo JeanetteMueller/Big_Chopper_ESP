@@ -97,16 +97,16 @@ Adafruit_PWMServoDriver pwm_head = Adafruit_PWMServoDriver(0x60);
 #define pwm_head_pin_15 (byte)15
 
 // Driving
-TankDrive *drive = new TankDrive(1000, 2000, 1500);
+JxTankDriver *drive = new JxTankDriver(1000, 2000, 1500);
 int16_t driveValueHorizontal = 1500;
 int16_t driveValueVertical = 1500;
 
 // Dome Rotation
-DomeRotation *domeRotation = new DomeRotation(1000, 2000, 1500);
+JxDomeRotation *domeRotation = new JxDomeRotation(1000, 2000, 1500);
 
 // Lights
 #define neoPixelLightsPin (byte)1
-Lights *lights = new Lights(neoPixelLightsPin, 150);
+ChopperLights *lights = new ChopperLights(neoPixelLightsPin, 150);
 
 // Audio
 // SoftwareSerial mySerial(6,5); // RX, TX

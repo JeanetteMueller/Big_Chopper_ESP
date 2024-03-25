@@ -1,6 +1,6 @@
-#include "Lights.h"
+#include "ChopperLights.h"
 
-Lights::Lights(byte pin, uint16_t mainBrightness)
+ChopperLights::ChopperLights(byte pin, uint16_t mainBrightness)
 {
     _pin = pin;
     _ledsCount = 2 + 7 + 7 + 7 + 1;
@@ -24,13 +24,13 @@ Lights::Lights(byte pin, uint16_t mainBrightness)
     periscopeColor = _neoPixelLights->Color(0, 255, 0);
 }
 
-void Lights::setupLights()
+void ChopperLights::setupLights()
 {
     _neoPixelLights->setBrightness(0);
     _neoPixelLights->begin();
 }
 
-void Lights::updateLight(LightType light, uint32_t color)
+void ChopperLights::updateLight(LightType light, uint32_t color)
 {
     uint16_t startIndex = 0;
     uint16_t length = 1;
@@ -81,7 +81,7 @@ void Lights::updateLight(LightType light, uint32_t color)
     }
 }
 
-void Lights::resetAllLights()
+void ChopperLights::resetAllLights()
 {
     for (uint16_t i = 0; i < _ledsCount; i++)
     {
@@ -89,7 +89,7 @@ void Lights::resetAllLights()
     }
 }
 
-void Lights::loopLights()
+void ChopperLights::loopLights()
 {
     _neoPixelLights->show();
 }

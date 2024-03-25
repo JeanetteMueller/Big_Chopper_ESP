@@ -1,11 +1,11 @@
 
-#ifndef Lights_h
-#define Lights_h
+#ifndef ChopperLights_h
+#define ChopperLights_h
 
 #include "Arduino.h"
 #include <Adafruit_NeoPixel.h>
 
-class Lights
+class ChopperLights
 {
 public:
   enum LightType
@@ -38,7 +38,7 @@ public:
 
   
 
-  Lights(byte pin, uint16_t mainBrightness);
+  ChopperLights(byte pin, uint16_t mainBrightness);
   void setupLights();
   void loopLights();
 

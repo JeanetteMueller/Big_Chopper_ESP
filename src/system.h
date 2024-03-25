@@ -21,9 +21,10 @@
 #include "SoftwareSerial.h"
 #include <DFPlayerMini_Fast.h>
 #include <TaskManager.h>
-#include "classes/TankDrive.h"
-#include "classes/DomeRotation.h"
-#include "classes/Lights.h"
+#include <JxTankDriver.h>
+#include <JxDomeRotation.h>
+
+#include "classes/ChopperLights.h"
 #include "classes/WebServer.h"
 
 #include "definitions.h"
@@ -101,29 +102,29 @@ void setup()
 void prepareLights()
 {
   lights->resetAllLights();
-  lights->updateLight(Lights::LightType::bodyBack, lights->backBodyLightColor);
-  lights->updateLight(Lights::LightType::bodyFront, lights->frontBodyLightColor);
+  lights->updateLight(ChopperLights::LightType::bodyBack, lights->backBodyLightColor);
+  lights->updateLight(ChopperLights::LightType::bodyFront, lights->frontBodyLightColor);
 
   // Eyes
   if (ibusVar09 == 2000)
   {
-    lights->updateLight(Lights::LightType::leftEyeCenter, lights->colorRed);
+    lights->updateLight(ChopperLights::LightType::leftEyeCenter, lights->colorRed);
   }
   else
   {
-    lights->updateLight(Lights::LightType::rightEye, lights->colorDefaultBlue);
-    lights->updateLight(Lights::LightType::centerEye, lights->colorDefaultBlue);
-    lights->updateLight(Lights::LightType::leftEye, lights->colorDefaultBlue);
+    lights->updateLight(ChopperLights::LightType::rightEye, lights->colorDefaultBlue);
+    lights->updateLight(ChopperLights::LightType::centerEye, lights->colorDefaultBlue);
+    lights->updateLight(ChopperLights::LightType::leftEye, lights->colorDefaultBlue);
   }
 
   // Periscope
   if (ibusVar02 >= 1650 && ibusVar02 <= 2000)
   {
-    lights->updateLight(Lights::LightType::periscope, lights->periscopeColor);
+    lights->updateLight(ChopperLights::LightType::periscope, lights->periscopeColor);
   }
   else
   {
-    lights->updateLight(Lights::LightType::periscope, lights->offColor);
+    lights->updateLight(ChopperLights::LightType::periscope, lights->offColor);
   }
 }
 
