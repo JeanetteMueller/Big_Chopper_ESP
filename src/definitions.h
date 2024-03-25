@@ -45,13 +45,13 @@ uint16_t ibusVar09 = 0;
 #define RC_SWITCH_RIGHT_OUT (byte)9
 
 // Task Managers
-TaskManager domeRightArmTaskManager = TaskManager();
-TaskManager domeLeftArmTaskManager = TaskManager();
-TaskManager domeShakeTaskManager = TaskManager();
-TaskManager bodyLeftArmTaskManager = TaskManager();
-TaskManager bodyRightArmTaskManager = TaskManager();
-TaskManager bodyUtilityArmTaskManager = TaskManager();
-TaskManager bodyUtilityArmGripperTaskManager = TaskManager();
+JxTaskManager domeRightArmTaskManager = JxTaskManager();
+JxTaskManager domeLeftArmTaskManager = JxTaskManager();
+JxTaskManager domeShakeTaskManager = JxTaskManager();
+JxTaskManager bodyLeftArmTaskManager = JxTaskManager();
+JxTaskManager bodyRightArmTaskManager = JxTaskManager();
+JxTaskManager bodyUtilityArmTaskManager = JxTaskManager();
+JxTaskManager bodyUtilityArmGripperTaskManager = JxTaskManager();
 
 // Servo Parameters
 #define SERVOMIN 150  // This is the 'minimum' pulse length count (out of 4096)

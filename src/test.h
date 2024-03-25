@@ -2,7 +2,7 @@ uint32_t globalCount = 0;
 
 bool globalBool = false;
 
-TaskManager testTaskManager = TaskManager();
+JxTaskManager testTaskManager = JxTaskManager();
 
 void setupTest()
 {
