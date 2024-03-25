@@ -86,7 +86,7 @@ void setup()
 
   setupDomeShake();
   setupBodyTools();
-  if (enableLight)
+  if (!debuging)
   {
     lights->setupLights();
   }
@@ -186,7 +186,7 @@ void loop()
   {
     previousMillis_100 = currentMillis;
 
-    if (enableLight)
+    if (!debuging)
     {
       prepareLights();
       lights->loopLights();

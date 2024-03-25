@@ -4,6 +4,7 @@
 
 #include "Arduino.h"
 #include <Adafruit_NeoPixel.h>
+#include "LightsGroup.h"
 
 class ChopperLights
 {
@@ -36,8 +37,6 @@ public:
   // grün, rot, blau
   uint32_t periscopeColor;
 
-  
-
   ChopperLights(byte pin, uint16_t mainBrightness);
   void setupLights();
   void loopLights();
@@ -47,6 +46,15 @@ public:
   void updateLight(LightType light, uint32_t color);
 
 private:
+  LightsGroup *_bodyBack;
+  LightsGroup *_bodyFront;
+
+  LightsGroup *_rightEye;
+  LightsGroup *_centerEye;
+  LightsGroup *_leftEye;
+
+  LightsGroup *_periscope;
+
   byte _pin;
   uint16_t _ledsCount;
   Adafruit_NeoPixel *_neoPixelLights;

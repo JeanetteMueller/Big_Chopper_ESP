@@ -3,7 +3,7 @@
 ChopperLights::ChopperLights(byte pin, uint16_t mainBrightness)
 {
     _pin = pin;
-    _ledsCount = 2 + 7 + 7 + 7 + 1;
+    _ledsCount = 1 + 1 + 7 + 7 + 7 + 1;
     _neoPixelLights = new Adafruit_NeoPixel(_ledsCount, _pin, pixelFormat);
     _neoPixelLights->setBrightness(mainBrightness);
 
@@ -22,6 +22,15 @@ ChopperLights::ChopperLights(byte pin, uint16_t mainBrightness)
 
     // grün, rot, blau
     periscopeColor = _neoPixelLights->Color(0, 255, 0);
+
+    _bodyBack = new LightsGroup(_neoPixelLights, 0, 1);
+    _bodyFront = new LightsGroup(_neoPixelLights, 1, 1);
+
+    _rightEye = new LightsGroup(_neoPixelLights, 2, 7);
+    _centerEye = new LightsGroup(_neoPixelLights, 9, 7);
+    _leftEye = new LightsGroup(_neoPixelLights, 16, 7);
+
+    _periscope = new LightsGroup(_neoPixelLights, 23, 1);
 }
 
 void ChopperLights::setupLights()
@@ -38,54 +47,51 @@ void ChopperLights::updateLight(LightType light, uint32_t color)
     switch (light)
     {
     case bodyBack:
-        startIndex = 0;
-        length = 1;
+        _bodyBack->setColor(color);
         break;
     case bodyFront:
-        startIndex = 1;
-        length = 1;
+        _bodyFront->setColor(color);
         break;
     case rightEye:
-        startIndex = 1 + 1;
-        length = 7;
+        _rightEye->setColor(color);
         break;
     case rightEyeCenter:
-        startIndex = 1 + 1 + 6;
-        length = 1;
+        _rightEye->setColor(color, 6);
         break;
     case centerEye:
-        startIndex = 1 + 1 + 7;
-        length = 7;
+        _centerEye->setColor(color);
         break;
     case centerEyeCenter:
-        startIndex = 1 + 1 + 7 + 6;
-        length = 1;
+        _centerEye->setColor(color, 6);
         break;
     case leftEye:
-        startIndex = 1 + 1 + 7 + 7;
-        length = 7;
+        _leftEye->setColor(color);
         break;
     case leftEyeCenter:
-        startIndex = 1 + 1 + 7 + 7 + 6;
-        length = 1;
+        _leftEye->setColor(color, 6);
         break;
     case periscope:
-        startIndex = 1 + 1 + 7 + 7 + 7;
-        length = 1;
+        _periscope->setColor(color);
         break;
-    }
-
-    for (uint16_t i = startIndex; i < (startIndex + length); i++)
-    {
-        _neoPixelLights->setPixelColor(i, color);
     }
 }
 
+
 void ChopperLights::resetAllLights()
-{
-    for (uint16_t i = 0; i < _ledsCount; i++)
+{   
+    LightsGroup* list[6] = {
+        _bodyBack, _bodyFront, 
+        _rightEye, _centerEye, _leftEye, 
+        _periscope
+    };
+
+    int len = *(&list + 1) - list;
+
+    for (uint16_t i = 0; i < len; i++)
     {
-        _neoPixelLights->setPixelColor(i, offColor);
+        LightsGroup* group = list[i];
+
+        group->setColor(offColor);
     }
 }
 

@@ -1,5 +1,5 @@
 
-bool enableLight = false;
+bool debuging = false;
 
 // TIME
 unsigned long currentMillis; // time current
