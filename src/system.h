@@ -64,7 +64,7 @@
 void setup()
 {
   Serial.begin(SERIAL_PORT_SPEED); // Used only for debugging on arduino serial monitor
-  Serial.println(F("Big Droid Chopper! v2.0"));
+  Serial.println(F("Big Droid Chopper! v2.1"));
 
   pwm_body.begin();
   pwm_body.setOscillatorFrequency(27000000);

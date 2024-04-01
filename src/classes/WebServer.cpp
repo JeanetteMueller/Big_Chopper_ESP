@@ -7,6 +7,10 @@ WebServer::WebServer(uint32_t port)
 
 void WebServer::start()
 {
+    _server->on("/api/post.json", HTTP_POST, [&](AsyncWebServerRequest *request){}, nullptr, [&](AsyncWebServerRequest *request, uint8_t* data, size_t len, size_t index, size_t total){
+        apiPostAction(request, data, len, index, total);
+    });
+
     _server->on("/", HTTP_POST, [&](AsyncWebServerRequest *request)
                 { postAction(request); });
 
@@ -29,6 +33,33 @@ void WebServer::start()
                         { notFound(request); });
 
     _server->begin();
+}
+
+void WebServer::apiPostAction(AsyncWebServerRequest *request, uint8_t* data, size_t len, size_t index, size_t total)
+{
+    Serial.println("apiPostAction!");
+
+    JsonDocument json;
+    deserializeJson(json, data, len);
+
+    int16_t x = json["joy1"]["x"];
+    int16_t y = json["joy1"]["y"];
+
+    Serial.println("post: joy1: ");
+    Serial.print(x);
+    Serial.print(" - ");
+    Serial.println(y);
+    // Serial.printf("JOY 1: %s - %s \n", joy1["x"], joy1["y"]);
+
+
+    //driveValueHorizontal = map(x, -100, 100, 1000, 2000);
+    //driveValueVertical = map(y, -100, 100, 1000, 2000);
+
+
+    String result;
+    serializeJson(json, result);
+
+    request->send(200, "application/json", result);
 }
 
 void WebServer::postAction(AsyncWebServerRequest *request)

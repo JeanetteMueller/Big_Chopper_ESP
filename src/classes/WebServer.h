@@ -11,6 +11,7 @@
 #endif
 
 #include <ESPAsyncWebServer.h>
+#include <ArduinoJson.h>
 
 #include "webserver/content/styles.h"
 #include "webserver/content/javascript.h"
@@ -43,7 +44,10 @@ private:
     String getBaseHtml(String body);
     String getContent(Content content);
     String getPage(Page page, AsyncWebServerRequest *request);
+
+    void apiPostAction(AsyncWebServerRequest *request, uint8_t* data, size_t len, size_t index, size_t total);
     void postAction(AsyncWebServerRequest *request);
+
     void notFound(AsyncWebServerRequest *request);
 };
 
