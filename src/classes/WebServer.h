@@ -35,6 +35,14 @@ public:
         javascriptContent
     };
 
+    int16_t joy1_x = 0;
+    int16_t joy1_y = 0;
+
+    int16_t domeRotate = 1500;
+
+    bool bodyArmLeft = false;
+    bool bodyArmRight = false;
+
     WebServer(uint32_t port);
     void start();
 

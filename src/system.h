@@ -20,12 +20,6 @@
 
 #include "SoftwareSerial.h"
 #include <DFPlayerMini_Fast.h>
-#include <JxTaskManager.h>
-#include <JxTankDriver.h>
-#include <JxDomeRotation.h>
-
-#include "classes/ChopperLights.h"
-#include "classes/WebServer.h"
 
 #include "definitions.h"
 
@@ -35,6 +29,7 @@
 #include "debug.h"
 #include "input.h"
 
+#include "drive.h"
 #include "domeRotation.h"
 #include "domeShake.h"
 #include "domePeriscope.h"
@@ -86,7 +81,7 @@ void setup()
 
   setupDomeShake();
   setupBodyTools();
-  if (!debuging)
+  if (!debug)
   {
     lights->setupLights();
   }
@@ -161,8 +156,7 @@ void loop()
   {
     previousMillis_005 = currentMillis;
 
-    drive->updateMotorsWith(driveValueHorizontal, driveValueVertical, 5, 150);
-
+    loopDrive();
     loopDomeRotation();
   }
 
@@ -179,14 +173,14 @@ void loop()
     loopDomeArms();
     domeShakeTaskManager.loop();
 
-    
+    loopBodyTools();
   }
 
   if (currentMillis - previousMillis_100 >= 100)
   {
     previousMillis_100 = currentMillis;
 
-    if (!debuging)
+    if (!debug)
     {
       prepareLights();
       lights->loopLights();

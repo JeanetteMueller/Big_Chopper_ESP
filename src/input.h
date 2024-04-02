@@ -23,8 +23,5 @@ void loopInput()
     ibusVar07 = IBus->readChannel(RC_SWITCH_LEFT_IN);   // (schalter links innen)
     ibusVar08 = IBus->readChannel(RC_SWITCH_RIGHT_IN);  // (schalter rechts innen)
     ibusVar09 = IBus->readChannel(RC_SWITCH_RIGHT_OUT); // (schalter rechts außen)
-
-    driveValueHorizontal = ibusVar00;
-    driveValueVertical = ibusVar01;
   }
 }

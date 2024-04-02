@@ -42,19 +42,19 @@ void WebServer::apiPostAction(AsyncWebServerRequest *request, uint8_t* data, siz
     JsonDocument json;
     deserializeJson(json, data, len);
 
-    int16_t x = json["joy1"]["x"];
-    int16_t y = json["joy1"]["y"];
-
-    Serial.println("post: joy1: ");
-    Serial.print(x);
+    joy1_x = json["joy1"]["x"];
+    joy1_y = json["joy1"]["y"];
+    Serial.print("post: joy1: ");
+    Serial.print(joy1_x);
     Serial.print(" - ");
-    Serial.println(y);
-    // Serial.printf("JOY 1: %s - %s \n", joy1["x"], joy1["y"]);
+    Serial.println(joy1_y);
 
+    domeRotate = json["dome"]["rotate"];
+    Serial.print("domeRotate: ");
+    Serial.println(domeRotate);
 
-    //driveValueHorizontal = map(x, -100, 100, 1000, 2000);
-    //driveValueVertical = map(y, -100, 100, 1000, 2000);
-
+    bodyArmLeft = json["body"]["arms"]["left"];
+    bodyArmRight = json["body"]["arms"]["right"];
 
     String result;
     serializeJson(json, result);
