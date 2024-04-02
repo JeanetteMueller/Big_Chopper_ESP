@@ -150,7 +150,7 @@ void loop()
 
   loopInput();
 
-  // debug();
+  // debugInput();
 
   if (currentMillis - previousMillis_005 >= 5)
   {

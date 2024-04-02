@@ -7,9 +7,9 @@ WebServer::WebServer(uint32_t port)
 
 void WebServer::start()
 {
-    _server->on("/api/post.json", HTTP_POST, [&](AsyncWebServerRequest *request){}, nullptr, [&](AsyncWebServerRequest *request, uint8_t* data, size_t len, size_t index, size_t total){
-        apiPostAction(request, data, len, index, total);
-    });
+    _server->on(
+        "/api/post.json", HTTP_POST, [&](AsyncWebServerRequest *request) {}, nullptr, [&](AsyncWebServerRequest *request, uint8_t *data, size_t len, size_t index, size_t total)
+        { apiPostAction(request, data, len, index, total); });
 
     _server->on("/", HTTP_POST, [&](AsyncWebServerRequest *request)
                 { postAction(request); });
@@ -21,7 +21,7 @@ void WebServer::start()
                 { request->send(200, "text/css", getContent(stylesContent)); });
 
     _server->on("/javascript.js", HTTP_GET, [&](AsyncWebServerRequest *request)
-                { request->send(200, "text/text", getContent(javascriptContent)); });
+                { request->send(200, "text/javascript", getContent(javascriptContent)); });
 
     _server->on("/index.html", HTTP_GET, [&](AsyncWebServerRequest *request)
                 { request->send(200, "text/html", getPage(indexPage, request)); });
@@ -35,7 +35,7 @@ void WebServer::start()
     _server->begin();
 }
 
-void WebServer::apiPostAction(AsyncWebServerRequest *request, uint8_t* data, size_t len, size_t index, size_t total)
+void WebServer::apiPostAction(AsyncWebServerRequest *request, uint8_t *data, size_t len, size_t index, size_t total)
 {
     Serial.println("apiPostAction!");
 

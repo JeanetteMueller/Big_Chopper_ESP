@@ -11,6 +11,7 @@
         "__split_buffer": "cpp",
         "array": "cpp",
         "unordered_map": "cpp",
-        "vector": "cpp"
+        "vector": "cpp",
+        "stdexcept": "cpp"
     }
 }

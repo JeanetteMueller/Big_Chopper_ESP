@@ -1,5 +1,5 @@
 
-void debug()
+void debugInput()
 {
 	Serial.print(F("  rX:"));
 	Serial.print(ibusVar00);

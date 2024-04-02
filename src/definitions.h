@@ -1,5 +1,5 @@
 
-bool debug = true;
+bool debug = false;
 
 // TIME
 unsigned long currentMillis; // time current

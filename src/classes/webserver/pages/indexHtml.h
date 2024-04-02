@@ -5,7 +5,7 @@ Index Page UNDER CONSTRUCTION
 <br />
 <a href="/settings.html">Settings</a>
 
-<div id="joyDiv" style="width:200px;height:200px;margin:50px"></div>
+<div id="joyDiv" style="width:200px;height:200px;margin:10px"></div>
 Pos X:<input id="joy1PosX" type="text" /> 
 Pos Y:<input id="joy1PosY" type="text" /><br />
 Rel X :<input id="joy1RelX" type="text" /> 
