@@ -4,11 +4,6 @@
 ChopperBody::ChopperBody(bool debug)
 {
     _debug = debug;
-    // init
-
-    // pwm_body = Adafruit_PWMServoDriver(0x40);
-    // drive = new JxTankDriver(1000, 2000, 1500);
-    // domeRotation = new JxDomeRotation(1000, 2000, 1500);
 }
 
 void ChopperBody::setupDomeShake()

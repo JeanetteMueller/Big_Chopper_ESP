@@ -20,15 +20,14 @@ public:
     void setup();
     void loop();
 
-    void setDriveHorizontal(int16_t horizontal);
-    void setDriveVertical(int16_t vertical);
+    int16_t horizontal = 0;
+    int16_t vertical = 0;
 
 private:
     bool _debug = false;
 
     JxTankDriver *drive = new JxTankDriver(1000, 2000, 1500);
-    int16_t _horizontal = 0;
-    int16_t _vertical = 0;
+    
     int16_t _driveValueHorizontal = 1500;
     int16_t _driveValueVertical = 1500;
 

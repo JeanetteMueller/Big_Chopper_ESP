@@ -24,7 +24,7 @@ void Chopper::loop()
 {
     _currentMillis = millis();
 
-    drive->updateMotorsWith(_horizontal, _vertical, 5, 150);
+    drive->updateMotorsWith(horizontal, vertical, 5, 150);
 
     body->loop();
     dome->loop();
@@ -35,13 +35,4 @@ void Chopper::loop()
 
         lights->loop();
     }
-}
-
-void Chopper::setDriveHorizontal(int16_t horizontal)
-{
-    _horizontal = horizontal;
-}
-void Chopper::setDriveVertical(int16_t vertical)
-{
-    _vertical = vertical;
 }
