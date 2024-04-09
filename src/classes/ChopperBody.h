@@ -30,14 +30,9 @@ class ChopperBody
 public:
     ChopperBody(bool debug);
     
-
-    // Servo Shield in Body
-    
-
     void setup();
     void loop();
 
-    
     void setDomeRotation(int16_t rotation);
 
     bool bodyArmLeft = false;
@@ -89,7 +84,6 @@ private:
     double max_utility_gripper = 65;
     JxTaskManager bodyUtilityArmGripperTaskManager = JxTaskManager();
     void setupUtilityGripper();
-
 
     // Servo Parameters
     uint16_t _SERVOMIN = 150;  // This is the 'minimum' pulse length count (out of 4096)

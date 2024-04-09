@@ -11,14 +11,8 @@ void WebServer::start()
         "/api/post.json", HTTP_POST, [&](AsyncWebServerRequest *request) {}, nullptr, [&](AsyncWebServerRequest *request, uint8_t *data, size_t len, size_t index, size_t total)
         { apiPostAction(request, data, len, index, total); });
 
-    _server->on("/", HTTP_POST, [&](AsyncWebServerRequest *request)
-                { postAction(request); });
-
-    _server->on("/", HTTP_GET, [&](AsyncWebServerRequest *request)
-                { 
-                    AsyncResponseStream *response = request->beginResponseStream("text/html");
-                    response->print( getPage(indexPage, request) );
-                    request->send(response); });
+    // _server->on("/", HTTP_POST, [&](AsyncWebServerRequest *request)
+    //             { postAction(request); });
 
     _server->on("/styles.css", HTTP_GET, [&](AsyncWebServerRequest *request)
                 { 
@@ -38,19 +32,19 @@ void WebServer::start()
     _server->on("/joystick.js", HTTP_GET, [&](AsyncWebServerRequest *request)
                 {
                     AsyncResponseStream *response = request->beginResponseStream("text/javascript");
-                    response->print(javascript_joystick_1);
-                    response->print(javascript_joystick_2);
-                    response->print(javascript_joystick_3);
-                    response->print(javascript_joystick_4);
-                    response->print(javascript_joystick_5);
-                    response->print(javascript_joystick_6);
-                    response->print(javascript_joystick_7);
-                    response->print(javascript_joystick_8);
-                    response->print(javascript_joystick_9);
-                    response->print(javascript_joystick_10);
-                    response->print(javascript_joystick_11);
+                    // response->print(javascript_joystick_1);
+                    // response->print(javascript_joystick_2);
+                    // response->print(javascript_joystick_3);
+                    // response->print(javascript_joystick_4);
+                    // response->print(javascript_joystick_5);
+                    // response->print(javascript_joystick_6);
+                    // response->print(javascript_joystick_7);
+                    // response->print(javascript_joystick_8);
+                    // response->print(javascript_joystick_9);
+                    // response->print(javascript_joystick_10);
+                    // response->print(javascript_joystick_11);
 
-                    // response->print("console.log('javascript loaded');");
+                    response->print("console.log('javascript javascript_joystick loaded');");
 
                     request->send(response); });
 
@@ -83,12 +77,35 @@ void WebServer::apiPostAction(AsyncWebServerRequest *request, uint8_t *data, siz
     Serial.print(" - ");
     Serial.println(joy1_y);
 
+    bodyArmLeft = json["body"]["arms"]["left"];
+    bodyArmRight = json["body"]["arms"]["right"];
+
     domeRotate = json["dome"]["rotate"];
     Serial.print("domeRotate: ");
     Serial.println(domeRotate);
 
-    bodyArmLeft = json["body"]["arms"]["left"];
-    bodyArmRight = json["body"]["arms"]["right"];
+    domeArmsLeftExtend = json["dome"]["arms"]["left"]["extend"];
+    domeArmsRightExtend = json["dome"]["arms"]["right"]["extend"];
+    domeArmsLeftRotate = json["dome"]["arms"]["left"]["rotate"];
+    domeArmsRightRotate = json["dome"]["arms"]["right"]["rotate"];
+
+    Serial.print("domeLeftArm extend: ");
+    Serial.print(domeArmsLeftExtend);
+    Serial.print(" rotate: ");
+    Serial.println(domeArmsLeftRotate);
+
+    Serial.print("domeRightArm extend: ");
+    Serial.print(domeArmsRightExtend);
+    Serial.print(" rotate: ");
+    Serial.println(domeArmsRightRotate);
+
+    domePeriscopeLift = json["dome"]["periscope"]["lift"];
+    domePeriscopeRotate = json["dome"]["periscope"]["rotate"];
+
+    Serial.print("Periscope lift: ");
+    Serial.print(domePeriscopeLift);
+    Serial.print(" rotate: ");
+    Serial.println(domePeriscopeRotate);
 
     String result;
     serializeJson(json, result);
@@ -141,7 +158,7 @@ void WebServer::notFound(AsyncWebServerRequest *request)
     request->send(404, "text/plain", "Not found");
 }
 
-void WebServer::getBaseHtml(const String & body, String &target)
+void WebServer::getBaseHtml(const String &body, String &target)
 {
     target = baseHtml;
     target.replace("###BODY###", body);

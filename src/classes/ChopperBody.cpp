@@ -124,7 +124,6 @@ void ChopperBody::loop()
     domeRotation->updateMotorWith(_rotation, 25);
 }
 
-
 void ChopperBody::setDomeRotation(int16_t rotation)
 {
     _rotation = rotation;
