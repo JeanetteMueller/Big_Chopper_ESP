@@ -12,6 +12,9 @@ Chopper::Chopper(bool debug)
 
 void Chopper::setup()
 {
+    drive->setupLeftMotor(PWM_DIR, 14, 12);
+    drive->setupRightMotor(PWM_DIR, 13, 15);
+
     body->setup();
     dome->setup();
     lights->setup();
@@ -20,6 +23,8 @@ void Chopper::setup()
 void Chopper::loop()
 {
     _currentMillis = millis();
+
+    drive->updateMotorsWith(_horizontal, _vertical, 5, 150);
 
     body->loop();
     dome->loop();
@@ -30,4 +35,13 @@ void Chopper::loop()
 
         lights->loop();
     }
+}
+
+void Chopper::setDriveHorizontal(int16_t horizontal)
+{
+    _horizontal = horizontal;
+}
+void Chopper::setDriveVertical(int16_t vertical)
+{
+    _vertical = vertical;
 }

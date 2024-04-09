@@ -83,16 +83,16 @@ void loop()
     // Driving
     if (ibusVar00 != 0 && ibusVar01 != 0)
     {
-        chopper->body->setDriveHorizontal(ibusVar00);
-        chopper->body->setDriveVertical(ibusVar01);
+        chopper->setDriveHorizontal(ibusVar00);
+        chopper->setDriveVertical(ibusVar01);
     }
     else
     {
         int16_t newX = map(webServer->joy1_x, -100, 100, 1000, 2000);
-        chopper->body->setDriveHorizontal(newX);
+        chopper->setDriveHorizontal(newX);
 
         int16_t newY = map(webServer->joy1_y, -100, 100, 1000, 2000);
-        chopper->body->setDriveVertical(newY);
+        chopper->setDriveVertical(newY);
     }
 
     // Dome & Periscope Rotation

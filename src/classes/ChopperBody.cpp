@@ -97,13 +97,10 @@ void ChopperBody::setupUtilityGripper()
 
 void ChopperBody::setup()
 {
-
     pwm_body.begin();
     pwm_body.setOscillatorFrequency(27000000);
     pwm_body.setPWMFreq(_SERVO_FREQ);
 
-    drive->setupLeftMotor(PWM_DIR, 14, 12);
-    drive->setupRightMotor(PWM_DIR, 13, 15);
     domeRotation->setupMotor(PWM_DIR, 0, 2);
 
     setupDomeShake();
@@ -129,19 +126,10 @@ void ChopperBody::loop()
     //     Serial.println(_vertical);
     // }
 
-    drive->updateMotorsWith(_horizontal, _vertical, 5, 150);
-
     domeRotation->updateMotorWith(_rotation, 25);
 }
 
-void ChopperBody::setDriveHorizontal(int16_t horizontal)
-{
-    _horizontal = horizontal;
-}
-void ChopperBody::setDriveVertical(int16_t vertical)
-{
-    _vertical = vertical;
-}
+
 void ChopperBody::setDomeRotation(int16_t rotation)
 {
     _rotation = rotation;

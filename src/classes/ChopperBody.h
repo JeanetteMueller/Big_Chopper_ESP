@@ -37,8 +37,7 @@ public:
     void setup();
     void loop();
 
-    void setDriveHorizontal(int16_t horizontal);
-    void setDriveVertical(int16_t vertical);
+    
     void setDomeRotation(int16_t rotation);
 
     bool bodyArmLeft = false;
@@ -51,17 +50,13 @@ private:
     bool _debug = false;
 
     Adafruit_PWMServoDriver pwm_body = Adafruit_PWMServoDriver(0x40);
-    JxTankDriver *drive = new JxTankDriver(1000, 2000, 1500);
+    
     JxDomeRotation *domeRotation = new JxDomeRotation(1000, 2000, 1500);
 
     JxTaskManager domeShakeTaskManager = JxTaskManager();
     void setupDomeShake();
 
-    int16_t _horizontal = 0;
-    int16_t _vertical = 0;
     int16_t _rotation = 0;
-    int16_t _driveValueHorizontal = 1500;
-    int16_t _driveValueVertical = 1500;
     int16_t _domeRotateSpeed = 1500;
 
     // Left

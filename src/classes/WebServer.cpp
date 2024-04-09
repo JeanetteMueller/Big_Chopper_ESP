@@ -144,8 +144,8 @@ void WebServer::notFound(AsyncWebServerRequest *request)
 void WebServer::getBaseHtml(const String & body, String &target)
 {
     target = baseHtml;
-    html.replace("###BODY###", body);
-    html.replace("###RANDOM###", random_string(10).c_str());
+    target.replace("###BODY###", body);
+    target.replace("###RANDOM###", random_string(10).c_str());
 }
 
 std::string WebServer::random_string(size_t length)
