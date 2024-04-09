@@ -38,20 +38,19 @@ void WebServer::start()
     _server->on("/joystick.js", HTTP_GET, [&](AsyncWebServerRequest *request)
                 {
                     AsyncResponseStream *response = request->beginResponseStream("text/javascript");
-                    // response->print(javascript_joystick_1);
-                    // response->print(javascript_joystick_2);
-                    // response->print(javascript_joystick_3);
-                    // response->print(javascript_joystick_4);
-                    // response->print(javascript_joystick_5);
-                    // response->print(javascript_joystick_6);
-                    // response->print(javascript_joystick_7);
-                    // response->print(javascript_joystick_8);
-                    // response->print(javascript_joystick_9);
-                    // response->print(javascript_joystick_10);
-                    // response->print(javascript_joystick_11);
-                    // response->print(javascript_joystick_12);
+                    response->print(javascript_joystick_1);
+                    response->print(javascript_joystick_2);
+                    response->print(javascript_joystick_3);
+                    response->print(javascript_joystick_4);
+                    response->print(javascript_joystick_5);
+                    response->print(javascript_joystick_6);
+                    response->print(javascript_joystick_7);
+                    response->print(javascript_joystick_8);
+                    response->print(javascript_joystick_9);
+                    response->print(javascript_joystick_10);
+                    response->print(javascript_joystick_11);
 
-                    response->print("console.log('javascript loaded');");
+                    // response->print("console.log('javascript loaded');");
 
                     request->send(response); });
 
