@@ -4,10 +4,6 @@
 ChopperDome::ChopperDome(bool debug)
 {   
     _debug = debug;
-    // init
-
-    // pwm_head = Adafruit_PWMServoDriver(0x60);
-
 }
 
 void ChopperDome::setupRightArmTools()

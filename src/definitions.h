@@ -23,6 +23,7 @@ WebServer *webServer = new WebServer(ServerPort);
 Chopper *chopper = new Chopper(debug);
 
 // RC values coming from the iBUS RC-Reciever
+#include <IBusBM.h>
 IBusBM *IBus = new IBusBM();
 uint16_t ibusVar00 = 0;
 uint16_t ibusVar01 = 0;

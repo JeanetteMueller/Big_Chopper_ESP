@@ -33,7 +33,7 @@ void loopWifi()
 
       if (!isConnected)
       {
-        isConnected == true;
+        isConnected = true;
         Serial.println(WiFi.localIP());
       }
     }

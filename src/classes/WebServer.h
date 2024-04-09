@@ -37,18 +37,29 @@ public:
     int16_t joy1_x = 0;
     int16_t joy1_y = 0;
 
-    int16_t domeRotate = 1500;
-
     bool bodyArmLeft = false;
     bool bodyArmRight = false;
+
+    int16_t domeRotate = 1500;
+    double domeArmsLeftExtend = 0;
+    double domeArmsRightExtend = 0;
+    double domeArmsLeftRotate = 0;
+    double domeArmsRightRotate = 0;
+
+    double domePeriscopeLift = 0;
+    double domePeriscopeRotate = 0;
+
 
     WebServer(uint32_t port);
     void start();
 
+    
+
 private:
     AsyncWebServer *_server;
+    String html;
 
-    String getBaseHtml(String body);
+    void getBaseHtml(const String & body, String &target);
     String getPage(Page page, AsyncWebServerRequest *request);
 
     void apiPostAction(AsyncWebServerRequest *request, uint8_t* data, size_t len, size_t index, size_t total);

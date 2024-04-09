@@ -1,33 +1,29 @@
-#include <Arduino.h>
-#ifdef __AVR__
-#include <avr/power.h>
-#endif
+// #include <Arduino.h>
+// #ifdef __AVR__
+// #include <avr/power.h>
+// #endif
 
-#include <Wire.h>
-#include "searchI2cPorts.h"
+// #include <Wire.h>
+// #include "searchI2cPorts.h"
 
-#ifdef ESP32
-#include <WiFi.h>
-#include <AsyncTCP.h>
-#elif defined(ESP8266)
+// #ifdef ESP32
+// #include <WiFi.h>
+// #include <AsyncTCP.h>
+// #elif defined(ESP8266)
 #include <ESP8266WiFi.h>
-#endif
+// #endif
 
 #define SERIAL_PORT_SPEED 115200 // Define the port output serial communication speed
 
-#include <IBusBM.h>
-#include <Adafruit_PWMServoDriver.h>
-
-#include "SoftwareSerial.h"
-#include <DFPlayerMini_Fast.h>
+// #include "SoftwareSerial.h"
+// #include <DFPlayerMini_Fast.h>
 
 #include "classes/Chopper.h"
 
 #include "definitions.h"
 
-#include "Wifi.h"
+#include "JxWifi.h"
 
-#include "functions.h"
 #include "debug.h"
 #include "input.h"
 
@@ -83,16 +79,16 @@ void loop()
     // Driving
     if (ibusVar00 != 0 && ibusVar01 != 0)
     {
-        chopper->body->setDriveHorizontal(ibusVar00);
-        chopper->body->setDriveVertical(ibusVar01);
+        chopper->horizontal = ibusVar00;
+        chopper->vertical = ibusVar01;
     }
     else
     {
         int16_t newX = map(webServer->joy1_x, -100, 100, 1000, 2000);
-        chopper->body->setDriveHorizontal(newX);
+        chopper->horizontal = newX;
 
         int16_t newY = map(webServer->joy1_y, -100, 100, 1000, 2000);
-        chopper->body->setDriveVertical(newY);
+        chopper->vertical = newY;
     }
 
     // Dome & Periscope Rotation

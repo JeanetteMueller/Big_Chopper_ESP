@@ -1,4 +1,4 @@
-const String settingsHtml = R"====(
+const char settingsHtml[] = R"====(
 
 Settings Page UNDER CONSTRUCTION
 <br />
