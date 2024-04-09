@@ -127,11 +127,13 @@ String WebServer::getPage(Page page, AsyncWebServerRequest *request)
     switch (page)
     {
     case indexPage:
-        return getBaseHtml(indexHtml);
+        getBaseHtml(indexHtml, html);
+        break;
     case settingsPage:
-        return getBaseHtml(settingsHtml);
+        getBaseHtml(settingsHtml, html);
+        break;
     }
-    return "";
+    return html;
 }
 
 void WebServer::notFound(AsyncWebServerRequest *request)
@@ -139,12 +141,11 @@ void WebServer::notFound(AsyncWebServerRequest *request)
     request->send(404, "text/plain", "Not found");
 }
 
-String WebServer::getBaseHtml(String body)
+void WebServer::getBaseHtml(const String & body, String &target)
 {
-    String html = baseHtml;
+    target = baseHtml;
     html.replace("###BODY###", body);
     html.replace("###RANDOM###", random_string(10).c_str());
-    return html;
 }
 
 std::string WebServer::random_string(size_t length)

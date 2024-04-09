@@ -45,10 +45,13 @@ public:
     WebServer(uint32_t port);
     void start();
 
+    
+
 private:
     AsyncWebServer *_server;
+    String html;
 
-    String getBaseHtml(String body);
+    void getBaseHtml(const String & body, String &target);
     String getPage(Page page, AsyncWebServerRequest *request);
 
     void apiPostAction(AsyncWebServerRequest *request, uint8_t* data, size_t len, size_t index, size_t total);
