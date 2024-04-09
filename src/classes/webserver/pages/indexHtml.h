@@ -1,4 +1,4 @@
-const String indexHtml = R"====(
+const char indexHtml[] = R"====(
 <a href="/settings.html">Settings</a>
 
 <h5>Drive</h5>

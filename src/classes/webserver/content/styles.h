@@ -1,4 +1,4 @@
-const String styles = R"====(
+const char styles[] = R"====(
 
 body { 
 	font-family: 'Helvetica', 'Arial', sans-serif; 
