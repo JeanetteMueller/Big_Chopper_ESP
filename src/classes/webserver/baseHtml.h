@@ -7,7 +7,7 @@ const String baseHtml = R"====(
 <meta name="apple-mobile-web-app-capable" content="yes" />
 
 <link rel="stylesheet" type="text/css" href="/styles.css">
-<script type="text/javascript" src="https://raw.githubusercontent.com/bobboteck/JoyStick/master/joy.min.js"></script>
+<script type="text/javascript" src="https://themaverick.de/joy.min.js"></script>
 <script type="text/javascript" src="/javascript.js"></script>
 
 

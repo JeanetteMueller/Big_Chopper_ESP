@@ -100,11 +100,6 @@ void ChopperLights::resetAllLights()
     }
 }
 
-void ChopperLights::setMood(LightsMood mood)
-{
-    _currentMood = mood;
-}
-
 void ChopperLights::prepareLights()
 {
     resetAllLights();
@@ -112,7 +107,7 @@ void ChopperLights::prepareLights()
     updateLight(ChopperLights::LightType::bodyFront, frontBodyLightColor);
 
     // Eyes
-    if (_currentMood == terminator)
+    if (currentMood == terminator)
     {
         updateLight(ChopperLights::LightType::leftEyeCenter, colorRed);
     }
@@ -124,19 +119,7 @@ void ChopperLights::prepareLights()
     }
 
     // Periscope
-    if (_periscopeIsOn)
-    {
-        updateLight(ChopperLights::LightType::periscope, periscopeColor);
-    }
-    else
-    {
-        updateLight(ChopperLights::LightType::periscope, offColor);
-    }
-}
-
-void ChopperLights::setPeriscope(bool on)
-{
-    _periscopeIsOn = on;
+    updateLight(ChopperLights::LightType::periscope, periscopeIsOn ? periscopeColor : offColor);
 }
 
 void ChopperLights::loop()

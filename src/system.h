@@ -141,20 +141,20 @@ void loop()
     // Lights
     if (ibusVar09 == 2000)
     {
-        chopper->lights->setMood(ChopperLights::LightsMood::terminator);
+        chopper->lights->currentMood = ChopperLights::LightsMood::terminator;
     }
     else
     {
-        chopper->lights->setMood(ChopperLights::LightsMood::basic);
+        chopper->lights->currentMood = ChopperLights::LightsMood::basic;
     }
 
     if (ibusVar02 >= 1650 && ibusVar02 <= 2000)
     {
-        chopper->lights->setPeriscope(true);
+        chopper->lights->periscopeIsOn = true;
     }
     else
     {
-        chopper->lights->setPeriscope(false);
+        chopper->lights->periscopeIsOn = false;
     }
 
     // Body Tools

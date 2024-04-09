@@ -43,18 +43,15 @@ public:
     // grün, rot, blau
     uint32_t periscopeColor;
 
+    LightsMood currentMood;
+    bool periscopeIsOn;
+
     ChopperLights(byte pin, uint16_t brightness, bool debug);
-    
+
     void setup();
-
-    void setMood(LightsMood mood);
     void loop();
-
     void resetAllLights();
-
     void updateLight(LightType light, uint32_t color);
-
-    void setPeriscope(bool on);
 
 private:
     bool _debug;
@@ -66,9 +63,6 @@ private:
     LightsGroup *_leftEye;
 
     LightsGroup *_periscope;
-
-    LightsMood _currentMood;
-    bool _periscopeIsOn;
 
     byte _pin;
     uint16_t _ledsCount;
