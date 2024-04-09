@@ -1,18 +1,21 @@
 #include "ChopperLights.h"
 
-ChopperLights::ChopperLights(byte pin, uint16_t brightness)
+ChopperLights::ChopperLights(byte pin, uint16_t brightness, bool debug)
 {
+    _debug = debug;
     _pin = pin;
     _ledsCount = 1 + 1 + 7 + 7 + 7 + 1;
     _brightness = brightness;
 }
 
-void ChopperLights::setupLights()
+void ChopperLights::setup()
 {
-
-    _neoPixelLights = new Adafruit_NeoPixel(_ledsCount, _pin, pixelFormat);
-    _neoPixelLights->setBrightness(_brightness);
-    _neoPixelLights->begin();
+    if (!_debug)
+    {
+        _neoPixelLights = new Adafruit_NeoPixel(_ledsCount, _pin, pixelFormat);
+        _neoPixelLights->setBrightness(_brightness);
+        _neoPixelLights->begin();
+    }
 
     _bodyBack = new LightsGroup(_neoPixelLights, 0, 1);
     _bodyFront = new LightsGroup(_neoPixelLights, 1, 1);
@@ -97,7 +100,50 @@ void ChopperLights::resetAllLights()
     }
 }
 
-void ChopperLights::loopLights()
+void ChopperLights::setMood(LightsMood mood)
 {
-    _neoPixelLights->show();
+    _currentMood = mood;
+}
+
+void ChopperLights::prepareLights()
+{
+    resetAllLights();
+    updateLight(ChopperLights::LightType::bodyBack, backBodyLightColor);
+    updateLight(ChopperLights::LightType::bodyFront, frontBodyLightColor);
+
+    // Eyes
+    if (_currentMood == terminator)
+    {
+        updateLight(ChopperLights::LightType::leftEyeCenter, colorRed);
+    }
+    else
+    {
+        updateLight(ChopperLights::LightType::rightEye, colorDefaultBlue);
+        updateLight(ChopperLights::LightType::centerEye, colorDefaultBlue);
+        updateLight(ChopperLights::LightType::leftEye, colorDefaultBlue);
+    }
+
+    // Periscope
+    if (_periscopeIsOn)
+    {
+        updateLight(ChopperLights::LightType::periscope, periscopeColor);
+    }
+    else
+    {
+        updateLight(ChopperLights::LightType::periscope, offColor);
+    }
+}
+
+void ChopperLights::setPeriscope(bool on)
+{
+    _periscopeIsOn = on;
+}
+
+void ChopperLights::loop()
+{
+    if (!_debug)
+    {
+        prepareLights();
+        _neoPixelLights->show();
+    }
 }

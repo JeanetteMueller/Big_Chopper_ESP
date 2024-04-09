@@ -1,17 +1,31 @@
 
-bool bodyArmLeft = false;
-bool bodyArmRight = false;
+#include "ChopperBody.h"
 
-void setupLeftBodyArm()
+ChopperBody::ChopperBody(bool debug)
 {
-    // Left
-    double default_door_left = 15;
-    double max_door_left = 82;
-    double default_toollift_left = 70;
-    double max_toollift_left = 20;
-    double default_action_left = 10;
-    double max_action_left = 120;
+    _debug = debug;
+    // init
 
+    // pwm_body = Adafruit_PWMServoDriver(0x40);
+    // drive = new JxTankDriver(1000, 2000, 1500);
+    // domeRotation = new JxDomeRotation(1000, 2000, 1500);
+}
+
+void ChopperBody::setupDomeShake()
+{
+    uint16_t centerPosition = 57;
+    uint16_t shakeRange = 30;
+
+    domeShakeTaskManager.addTask(new BoolValueTask(&domeShake, true));
+
+    domeShakeTaskManager.addTask(new MoveServoTask(pwm_body, pwm_body_pin_domeShake, centerPosition, centerPosition + shakeRange, 200));
+
+    domeShakeTaskManager.addTask(new MoveServoTask(pwm_body, pwm_body_pin_domeShake, centerPosition + shakeRange, centerPosition - shakeRange, 400));
+
+    domeShakeTaskManager.addTask(new MoveServoTask(pwm_body, pwm_body_pin_domeShake, centerPosition - shakeRange, centerPosition, 200));
+}
+void ChopperBody::setupLeftBodyArm()
+{
     // bodyLeftArmTaskManager.addTask(new InputTask(IBus, RC_SWITCH_LEFT_OUT, 2000, -1));
     bodyLeftArmTaskManager.addTask(new BoolValueTask(&bodyArmLeft, true));
     // Door Open
@@ -34,16 +48,8 @@ void setupLeftBodyArm()
     bodyLeftArmTaskManager.addTask(new MoveServoTask(pwm_body, pwm_body_pin_left_door, max_door_left, default_door_left, 200, 200));
 }
 
-void setupRightBodyArm()
+void ChopperBody::setupRightBodyArm()
 {
-    // Right
-    double default_door_right = 120;
-    double max_door_right = 15;
-    double default_toollift_right = 10;
-    double max_toollift_right = 50;
-    double default_action_right = 67;
-    double max_action_right = 140;
-
     // check if swith is active
     // bodyRightArmTaskManager.addTask(new InputTask(IBus, RC_SWITCH_RIGHT_OUT, 2000));
     bodyRightArmTaskManager.addTask(new BoolValueTask(&bodyArmRight, true));
@@ -65,75 +71,92 @@ void setupRightBodyArm()
     bodyRightArmTaskManager.addTask(new MoveServoTask(pwm_body, pwm_body_pin_right_door, max_door_right, default_door_right, 200, 200));
 }
 
-double default_utility_gripper = 120;
-double max_utility_gripper = 65;
-
-void setupUtilityArm()
+void ChopperBody::setupUtilityArm()
 {
-    double default_utility_arm = 0;
-    double max_utility_arm = 100;
-
-    bodyUtilityArmTaskManager.addTask(new InputTask(IBus, RC_SWITCH_RIGHT_IN, 1500, 2000));
+    bodyUtilityArmTaskManager.addTask(new BoolValueTask(&utilityArm, true));
     // bring arm out
     bodyUtilityArmTaskManager.addTask(new MoveServoTask(pwm_body, pwm_body_pin_utilityarm, default_utility_arm, max_utility_arm, 800));
 
-    bodyUtilityArmTaskManager.addTask(new InputTask(IBus, RC_SWITCH_RIGHT_IN, 1000));
+    bodyUtilityArmTaskManager.addTask(new BoolValueTask(&utilityArm, false));
     // close gripper
     bodyUtilityArmTaskManager.addTask(new MoveServoTask(pwm_body, pwm_body_pin_utilityarmgripper, default_utility_gripper, default_utility_gripper, 0, 50));
     // bring arm in
     bodyUtilityArmTaskManager.addTask(new MoveServoTask(pwm_body, pwm_body_pin_utilityarm, max_utility_arm, default_utility_arm, 700));
 }
 
-void setupUtilityGripper()
+void ChopperBody::setupUtilityGripper()
 {
-    bodyUtilityArmGripperTaskManager.addTask(new InputTask(IBus, RC_SWITCH_RIGHT_IN, 2000));
+    bodyUtilityArmGripperTaskManager.addTask(new BoolValueTask(&utilityArmGripper, true));
     // open Gripper
     bodyUtilityArmGripperTaskManager.addTask(new MoveServoTask(pwm_body, pwm_body_pin_utilityarmgripper, default_utility_gripper, max_utility_gripper, 300, 200));
 
-    bodyUtilityArmGripperTaskManager.addTask(new InputTask(IBus, RC_SWITCH_RIGHT_IN, 1500));
+    bodyUtilityArmGripperTaskManager.addTask(new BoolValueTask(&utilityArmGripper, false));
     // close Gripper
     bodyUtilityArmGripperTaskManager.addTask(new MoveServoTask(pwm_body, pwm_body_pin_utilityarmgripper, max_utility_gripper, default_utility_gripper, 300, 200));
 }
 
-void setupBodyTools()
+void ChopperBody::setup()
 {
+
+    pwm_body.begin();
+    pwm_body.setOscillatorFrequency(27000000);
+    pwm_body.setPWMFreq(_SERVO_FREQ);
+
+    drive->setupLeftMotor(PWM_DIR, 14, 12);
+    drive->setupRightMotor(PWM_DIR, 13, 15);
+    domeRotation->setupMotor(PWM_DIR, 0, 2);
+
+    setupDomeShake();
+
     setupLeftBodyArm();
     setupRightBodyArm();
     setupUtilityArm();
     setupUtilityGripper();
 }
-
-void loopBodyTools()
+void ChopperBody::loop()
 {
-    if (ibusVar06 != 0)
-    {
-        if (ibusVar06 >= 1500 && ibusVar06 <= 2000)
-        {
-            bodyArmLeft = true;
-        }
-        else
-        {
-            bodyArmLeft = false;
-        }
-    }
-    else
-    {
-        bodyArmLeft = webServer->bodyArmLeft;
-    }
+    bodyLeftArmTaskManager.loop();
+    bodyRightArmTaskManager.loop();
+    bodyUtilityArmTaskManager.loop();
+    bodyUtilityArmGripperTaskManager.loop();
+    domeShakeTaskManager.loop();
 
-    if (ibusVar09 != 0)
-    {
-        if (ibusVar09 >= 1500 && ibusVar09 <= 2000)
-        {
-            bodyArmRight = true;
-        }
-        else
-        {
-            bodyArmRight = false;
-        }
-    }
-    else
-    {
-        bodyArmRight = webServer->bodyArmRight;
-    }
+    // if (_debug)
+    // {
+    //     Serial.print("updateMotorsWith: ");
+    //     Serial.print(_horizontal);
+    //     Serial.print(" - ");
+    //     Serial.println(_vertical);
+    // }
+
+    drive->updateMotorsWith(_horizontal, _vertical, 5, 150);
+
+    domeRotation->updateMotorWith(_rotation, 25);
+}
+
+void ChopperBody::setDriveHorizontal(int16_t horizontal)
+{
+    _horizontal = horizontal;
+}
+void ChopperBody::setDriveVertical(int16_t vertical)
+{
+    _vertical = vertical;
+}
+void ChopperBody::setDomeRotation(int16_t rotation)
+{
+    _rotation = rotation;
+}
+
+void ChopperBody::rotateServoToDegree(uint8_t servo, double degree)
+{
+    uint16_t pulselength = map(degree, 0, 180, _SERVOMIN, _SERVOMAX); //  Calibrate the positive range (see below)
+    /*
+    Serial.print(F("rotateServoToDegree Servo: "));
+    Serial.print(servo);
+    Serial.print(F(" to Degree: "));
+    Serial.print(degree);
+    Serial.print(F(" with Pulselength: "));
+    Serial.println(pulselength);
+    */
+    pwm_body.setPWM(servo, 0, pulselength);
 }

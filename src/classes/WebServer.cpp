@@ -15,16 +15,36 @@ void WebServer::start()
                 { postAction(request); });
 
     _server->on("/", HTTP_GET, [&](AsyncWebServerRequest *request)
-                { request->send(200, "text/html", getPage(indexPage, request)); });
+                { 
+                    AsyncResponseStream *response = request->beginResponseStream("text/html");
+                    response->print( getPage(indexPage, request) );
+                    request->send(response); });
 
     _server->on("/styles.css", HTTP_GET, [&](AsyncWebServerRequest *request)
-                { request->send(200, "text/css", getContent(stylesContent)); });
+                { 
+                    AsyncResponseStream *response = request->beginResponseStream("text/css");
+                    response->print(styles);
+                    request->send(response); });
 
     _server->on("/javascript.js", HTTP_GET, [&](AsyncWebServerRequest *request)
-                { request->send(200, "text/javascript", getContent(javascriptContent)); });
+                {
+                    AsyncResponseStream *response = request->beginResponseStream("text/javascript");
+                    response->print(javascript_1);
+                    response->print(javascript_2);
+                    request->send(response); });
+
+    _server->on("/joystick.js", HTTP_GET, [&](AsyncWebServerRequest *request)
+                {
+                    AsyncResponseStream *response = request->beginResponseStream("text/javascript");
+                    response->print(javascript_joystick_1);
+                    response->print(javascript_joystick_2);
+                    request->send(response); });
 
     _server->on("/index.html", HTTP_GET, [&](AsyncWebServerRequest *request)
-                { request->send(200, "text/html", getPage(indexPage, request)); });
+                {
+                    AsyncResponseStream *response = request->beginResponseStream("text/html");
+                    response->print(getPage(indexPage, request));
+                    request->send(response); });
 
     _server->on("/settings.html", HTTP_GET, [&](AsyncWebServerRequest *request)
                 { request->send(200, "text/html", getPage(settingsPage, request)); });
@@ -100,18 +120,6 @@ String WebServer::getPage(Page page, AsyncWebServerRequest *request)
     return "";
 }
 
-String WebServer::getContent(Content content)
-{
-    switch (content)
-    {
-    case stylesContent:
-        return styles;
-    case javascriptContent:
-        return javascript;
-    }
-    return "";
-}
-
 void WebServer::notFound(AsyncWebServerRequest *request)
 {
     request->send(404, "text/plain", "Not found");
@@ -121,5 +129,22 @@ String WebServer::getBaseHtml(String body)
 {
     String html = baseHtml;
     html.replace("###BODY###", body);
+    html.replace("###RANDOM###", random_string(10).c_str());
     return html;
+}
+
+std::string WebServer::random_string(size_t length)
+{
+    auto randchar = []() -> char
+    {
+        const char charset[] =
+            "0123456789"
+            "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+            "abcdefghijklmnopqrstuvwxyz";
+        const size_t max_index = (sizeof(charset) - 1);
+        return charset[rand() % max_index];
+    };
+    std::string str(length, 0);
+    std::generate_n(str.begin(), length, randchar);
+    return str;
 }

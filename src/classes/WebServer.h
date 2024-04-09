@@ -31,8 +31,7 @@ public:
 
     enum Content
     {
-        stylesContent,
-        javascriptContent
+        stylesContent
     };
 
     int16_t joy1_x = 0;
@@ -50,13 +49,13 @@ private:
     AsyncWebServer *_server;
 
     String getBaseHtml(String body);
-    String getContent(Content content);
     String getPage(Page page, AsyncWebServerRequest *request);
 
     void apiPostAction(AsyncWebServerRequest *request, uint8_t* data, size_t len, size_t index, size_t total);
     void postAction(AsyncWebServerRequest *request);
 
     void notFound(AsyncWebServerRequest *request);
+    std::string random_string(size_t length);
 };
 
 #endif

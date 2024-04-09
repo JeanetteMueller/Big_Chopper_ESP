@@ -1,7 +1,9 @@
 
 void rotateServoToDegree(Adafruit_PWMServoDriver pwm, uint8_t servo, double degree)
 {
-	uint16_t pulselength = map(degree, 0, 180, SERVOMIN, SERVOMAX); //  Calibrate the positive range (see below)
+	uint16_t servoMin = 150;
+	uint16_t servoMax = 595;
+	uint16_t pulselength = map(degree, 0, 180, servoMin, servoMax); //  Calibrate the positive range (see below)
 	/*
 	Serial.print(F("rotateServoToDegree Servo: "));
 	Serial.print(servo);
