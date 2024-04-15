@@ -18,11 +18,7 @@
 // #include "SoftwareSerial.h"
 // #include <DFPlayerMini_Fast.h>
 
-#include "classes/Chopper.h"
-
 #include "definitions.h"
-
-#include "JxWifi.h"
 
 #include "debug.h"
 #include "input.h"
@@ -52,9 +48,22 @@ void setup()
     Serial.begin(SERIAL_PORT_SPEED); // Used only for debugging on arduino serial monitor
     Serial.println(F("Big Droid Chopper! v2.1"));
 
+    // Wifi Settings
+    wifi->host = IPAddress(192, 168, 10, 1);
+    wifi->subnetMask = IPAddress(255, 255, 255, 0);
+    wifi->currentMode = JxWifiManager::WifiModeNetwork;
+
+    // Hotspot
+    wifi->hotspot_Ssid = "ChopperWifiControl";
+    wifi->hotspot_Password = "<YOUR WIFI PASSWORD>";
+
+    // use Local Wifi
+    wifi->network_Ssid = "Yavin4"; // <- change if needed
+    wifi->network_Password = "29833170985536833475";
+
     setupInput();
 
-    setupWifi();
+    wifi->setup();
     webServer->start();
 
     chopper->setup();
@@ -71,7 +80,8 @@ void loop()
     // searchI2CPorts2();
     // return;
 
-    loopWifi();
+    wifi->loop();
+
     loopInput();
 
     // debugInput();
