@@ -1,7 +1,7 @@
 
 bool debug = true;
 
-#include <JxWifiManager.h>
+#include "submodules/JxWifiManager/JxWifiManager.h"
 JxWifiManager *wifi = new JxWifiManager();
 
 #include "classes/WebServer.h"

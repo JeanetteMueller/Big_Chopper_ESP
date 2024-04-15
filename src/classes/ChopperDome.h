@@ -1,7 +1,7 @@
 #ifndef ChopperDome_h
 #define ChopperDome_h
 
-#include <JxTaskManager.h>
+#include "../submodules/JxTaskManager/JxTaskManager.h"
 #include <Adafruit_PWMServoDriver.h>
 
 #define SERVO_FREQ (uint16_t)60

@@ -1,9 +1,10 @@
 #ifndef ChopperBody_h
 #define ChopperBody_h
 
-#include <JxTankDriver.h>
-#include <JxDomeRotation.h>
-#include <JxTaskManager.h>
+#include "../submodules/JxTankDriver/JxTankDriver.h"
+#include "../submodules/JxDomeRotation/JxDomeRotation.h"
+#include "../submodules/JxTaskManager/JxTaskManager.h"
+
 #include <Adafruit_PWMServoDriver.h>
 
 #define SERVO_FREQ (uint16_t)60
