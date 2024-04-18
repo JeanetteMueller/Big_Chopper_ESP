@@ -63,10 +63,10 @@ void setup()
 
     setupInput();
 
+    chopper->setup();
+
     wifi->setup();
     webServer->start();
-
-    chopper->setup();
 
     // setupAudio();
 
@@ -94,10 +94,10 @@ void loop()
     }
     else
     {
-        int16_t newX = map(webServer->joy1_x, -100, 100, 1000, 2000);
+        int16_t newX = map(webServer->drive_x, -100, 100, 1000, 2000);
         chopper->horizontal = newX;
 
-        int16_t newY = map(webServer->joy1_y, -100, 100, 1000, 2000);
+        int16_t newY = map(webServer->drive_y, -100, 100, 1000, 2000);
         chopper->vertical = newY;
     }
 
@@ -210,8 +210,17 @@ void loop()
     }
     else
     {
-        chopper->body->utilityArmGripper = false;
-        chopper->body->utilityArm = false;
+        
+        chopper->body->utilityArm = webServer->utilityArm;
+        if (webServer->utilityArmGripper && webServer->utilityArm) 
+        {
+            chopper->body->utilityArmGripper = true;
+        }
+        else
+        {
+            chopper->body->utilityArmGripper = false;
+        }
+        
     }
 
     // Do Main Loop

@@ -29,16 +29,13 @@ public:
         settingsPage
     };
 
-    enum Content
-    {
-        stylesContent
-    };
-
-    int16_t joy1_x = 0;
-    int16_t joy1_y = 0;
+    int16_t drive_x = 0;
+    int16_t drive_y = 0;
 
     bool bodyArmLeft = false;
     bool bodyArmRight = false;
+    bool utilityArm = false;
+    bool utilityArmGripper = false;
 
     int16_t domeRotate = 1500;
     double domeArmsLeftExtend = 0;

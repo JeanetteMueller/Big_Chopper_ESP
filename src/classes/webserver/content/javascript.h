@@ -1,36 +1,28 @@
-const char javascript_1[] = R"====(
+const char javascript[] = R"====(
 
-async function postData(url = "", data = {}) {
-  // Default options are marked with *
-  const response = await fetch(url, {
-    method: "POST",
-    mode: "cors", // no-cors, *cors, same-origin
-    cache: "no-cache",
-    headers: {
-      "Content-Type": "application/json"
-    },
-    referrerPolicy: "no-referrer", // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
-    body: JSON.stringify(data), // body data type must match "Content-Type" header
-  });
-  return response.json(); 
-}
+var JoyDrive;
+var JoyDriveX = 0;
+var JoyDriveY = 0;
 
-)====";
-
-const char javascript_2[] = R"====(
-
-function sendFormularUpdate() {
+function sendBodyUpdate() {
     const data = { 
-        joy1: {
-            x: joy1RelX.value,
-            y: joy1RelY.value
-        },
         body: {
             arms: {
                 left: document.getElementById("bodyArmLeft").checked,
                 right: document.getElementById("bodyArmRight").checked
+            },
+            utility: {
+                arm: document.getElementById("utilityArm").checked,
+                gripper: document.getElementById("utilityArmGripper").checked
             }
-        },
+        }
+    };
+
+    sendData(data);
+}
+
+function sendDomeUpdate() {
+    const data = { 
         dome: {
             rotate: document.getElementById("domeRotate").value,
             arms: {
@@ -50,32 +42,75 @@ function sendFormularUpdate() {
         }
     };
 
+    sendData(data);
+}
+
+function sendDriveUpdate() {
+
+    const data = {
+        drive: {
+            x: JoyDrive.GetX(),
+            y: JoyDrive.GetY()
+        }
+    };
+    sendData(data);
+}
+
+async function postData(url = "", data = {}) {
+  // Default options are marked with *
+  const response = await fetch(url, {
+    method: "POST",
+    mode: "no-cors", // no-cors, *cors, same-origin
+    cache: "no-cache",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    referrerPolicy: "no-referrer", // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
+    body: JSON.stringify(data), // body data type must match "Content-Type" header
+  });
+  return response.json(); 
+}
+
+function sendData(data) {
     console.log(data);
 
-    postData("/api/post.json", data).then((result) => {
-        console.log(result); // JSON data parsed by `result.json()` call
+    postData("/api/post.json", data).then(json => {
+        console.log("Result from Server: ");
+        callbackActionOnServer(json);
     });
 }
 
-)====";
+function callbackActionOnServer(json) {
+    console.log(json);
+}
 
-const char javascript_3[] = R"====(
-    
 function systemInit() {
-    var joy1PosX = document.getElementById("joy1PosX");
-    var joy1PosY = document.getElementById("joy1PosY");
-    var joy1RelX = document.getElementById("joy1RelX");
-    var joy1RelY = document.getElementById("joy1RelY");
+    var joyDrivePosX = document.getElementById("joyDrivePosX");
+    var joyDrivePosY = document.getElementById("joyDrivePosY");
+    var joyDriveRelX = document.getElementById("joyDriveRelX");
+    var joyDriveRelY = document.getElementById("joyDriveRelY");
 
-    var Joy1 = new JoyStick('joyDiv', {
-        "autoReturnToCenter": true
+    JoyDrive = new JoyStick('joyDrive', {
+        "autoReturnToCenter": true,
+        "internalFillColor": "#fd2",
+        "internalLineWidth": 2,
+        "internalStrokeColor": "#b90",
+        "externalLineWidth": 2,
+        "externalStrokeColor": "#b90"
     }, function(stickData) {
-        joy1PosX.value = stickData.xPosition;
-        joy1PosY.value = stickData.yPosition;
-        joy1RelX.value = stickData.x;
-        joy1RelY.value = stickData.y;
+        if (JoyDriveX != stickData.x || JoyDriveY != stickData.y) {
+            console.log("joystick action");
 
-        sendFormularUpdate();
+            joyDrivePosX.value = stickData.xPosition;
+            joyDrivePosY.value = stickData.yPosition;
+            joyDriveRelX.value = stickData.x;
+            joyDriveRelY.value = stickData.y;
+
+            JoyBodyX = stickData.x;
+            JoyBodyY = stickData.y;
+
+            sendDriveUpdate();
+        }
     });
 }
 
