@@ -102,29 +102,45 @@ void loop()
     }
 
     // Dome & Periscope Rotation
-    if (ibusVar02 >= 1500 && ibusVar02 <= 2000)
+    if (ibusVar02 != 0 && ibusVar03 != 0)
     {
-        chopper->body->setDomeRotation(1500);
-
-        int16_t liftPeriscope = map(ibusVar02, 1500, 2000, 0, 255);
-        chopper->dome->setPeriscopeLift(liftPeriscope);
-
-        int16_t rotationPeriscope = map(ibusVar03, 1000, 2000, -127, 127);
-        chopper->dome->setPeriscopeRotation(rotationPeriscope);
-    }
-    else
-    {
-        chopper->dome->setPeriscopeLift(0);
-        chopper->dome->setPeriscopeRotation(0);
-
-        if (ibusVar03 != 0)
+        if (ibusVar02 >= 1500 && ibusVar02 <= 2000)
         {
-            chopper->body->setDomeRotation(ibusVar03);
+            chopper->body->setDomeRotation(1500);
+
+            int16_t liftPeriscope = map(ibusVar02, 1500, 2000, 0, 255);
+            chopper->dome->setPeriscopeLift(liftPeriscope);
+
+            int16_t rotationPeriscope = map(ibusVar03, 1000, 2000, -127, 127);
+            chopper->dome->setPeriscopeRotation(rotationPeriscope);
         }
         else
         {
-            chopper->body->setDomeRotation(webServer->domeRotate);
+            chopper->dome->setPeriscopeLift(0);
+            chopper->dome->setPeriscopeRotation(0);
+
+            if (ibusVar03 != 0)
+            {
+                chopper->body->setDomeRotation(ibusVar03);
+            }
+            else
+            {
+                chopper->body->setDomeRotation(webServer->domeRotate);
+            }
         }
+    }
+    else
+    {
+        Serial.println(F("Do Webserver Dome Rotation action"));
+        chopper->body->setDomeRotation(webServer->domeRotate);
+
+
+        Serial.println(F("Do Webserver periscope action"));
+        int16_t liftPeriscope = map(webServer->domePeriscopeLift, 1000, 2000, 0, 255);
+        chopper->dome->setPeriscopeLift(liftPeriscope);
+
+        int16_t rotationPeriscope = map(webServer->domePeriscopeRotate, 1000, 2000, -127, 127);
+        chopper->dome->setPeriscopeRotation(rotationPeriscope);
     }
 
     // Dome Arms
@@ -210,9 +226,9 @@ void loop()
     }
     else
     {
-        
+
         chopper->body->utilityArm = webServer->utilityArm;
-        if (webServer->utilityArmGripper && webServer->utilityArm) 
+        if (webServer->utilityArmGripper && webServer->utilityArm)
         {
             chopper->body->utilityArmGripper = true;
         }
@@ -220,7 +236,6 @@ void loop()
         {
             chopper->body->utilityArmGripper = false;
         }
-        
     }
 
     // Do Main Loop

@@ -182,10 +182,4 @@ input {
     border-radius: 30px;
 }
 
-.joystick {
-    width: 200px;
-    height: 200px;
-    margin: 10px;
-}
-
 )====";

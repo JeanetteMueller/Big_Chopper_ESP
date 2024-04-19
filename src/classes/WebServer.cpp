@@ -27,12 +27,6 @@ void WebServer::start()
 
                     request->send(response); });
 
-    _server->on("/joystick.js", HTTP_GET, [&](AsyncWebServerRequest *request)
-                {
-                    AsyncResponseStream *response = request->beginResponseStream("text/javascript");
-                    response->print(javascript_joystick);
-                    request->send(response); });
-
     _server->on("/", HTTP_GET, [&](AsyncWebServerRequest *request)
                 {
                     AsyncResponseStream *response = request->beginResponseStream("text/html");
@@ -59,16 +53,6 @@ void WebServer::apiPostAction(AsyncWebServerRequest *request, uint8_t *data, siz
 
     JsonDocument json;
     deserializeJson(json, data, len);
-
-    if (!json["drive"].isNull())
-    {
-        drive_x = json["drive"]["x"];
-        drive_y = json["drive"]["y"];
-        Serial.print("post: drive: ");
-        Serial.print(drive_x);
-        Serial.print(" - ");
-        Serial.println(drive_y);
-    }
 
     if (!json["body"].isNull())
     {

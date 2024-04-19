@@ -26,7 +26,7 @@ void ChopperBody::setupLeftBodyArm()
     // Door Open
     bodyLeftArmTaskManager.addTask(new MoveServoTask(pwm_body, pwm_body_pin_left_door, default_door_left, max_door_left, 200, 200));
     // Bring Tool out
-    bodyLeftArmTaskManager.addTask(new MoveServoTask(pwm_body, pwm_body_pin_left_toollift, default_toollift_left, max_toollift_left, 800));
+    bodyLeftArmTaskManager.addTask(new MoveServoTask(pwm_body, pwm_body_pin_left_toollift, default_toollift_left, max_toollift_left, 300, 200));
     // Use Tool
     bodyLeftArmTaskManager.addTask(new MoveServoTask(pwm_body, pwm_body_pin_left_action, default_action_left, max_action_left, 200, 400));
     bodyLeftArmTaskManager.addTask(new MoveServoTask(pwm_body, pwm_body_pin_left_action, max_action_left, default_action_left, 200, 400));
