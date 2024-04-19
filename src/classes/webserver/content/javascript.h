@@ -5,7 +5,7 @@ var JoyDriveX = 0;
 var JoyDriveY = 0;
 
 function sendBodyUpdate() {
-    const data = { 
+    const data = {
         body: {
             arms: {
                 left: document.getElementById("bodyArmLeft").checked,
@@ -22,7 +22,7 @@ function sendBodyUpdate() {
 }
 
 function sendDomeUpdate() {
-    const data = { 
+    const data = {
         dome: {
             rotate: document.getElementById("domeRotate").value,
             arms: {
@@ -33,7 +33,7 @@ function sendDomeUpdate() {
                 right: {
                     extend: document.getElementById("domeRightArmExtend").value,
                     rotate: document.getElementById("domeRightArmRotate").value
-                } 
+                }
             },
             periscope: {
                 lift: document.getElementById("periscopeLift").value,
@@ -57,18 +57,18 @@ function sendDriveUpdate() {
 }
 
 async function postData(url = "", data = {}) {
-  // Default options are marked with *
-  const response = await fetch(url, {
-    method: "POST",
-    mode: "no-cors", // no-cors, *cors, same-origin
-    cache: "no-cache",
-    headers: {
-      "Content-Type": "application/json"
-    },
-    referrerPolicy: "no-referrer", // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
-    body: JSON.stringify(data), // body data type must match "Content-Type" header
-  });
-  return response.json(); 
+    // Default options are marked with *
+    const response = await fetch(url, {
+        method: "POST",
+        mode: "no-cors", // no-cors, *cors, same-origin
+        cache: "no-cache",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        referrerPolicy: "no-referrer", // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
+        body: JSON.stringify(data), // body data type must match "Content-Type" header
+    });
+    return response.json();
 }
 
 function sendData(data) {
@@ -84,11 +84,16 @@ function callbackActionOnServer(json) {
     console.log(json);
 }
 
-function systemInit() {
-    var joyDrivePosX = document.getElementById("joyDrivePosX");
-    var joyDrivePosY = document.getElementById("joyDrivePosY");
-    var joyDriveRelX = document.getElementById("joyDriveRelX");
-    var joyDriveRelY = document.getElementById("joyDriveRelY");
+
+function initBindings() {
+    document.getElementById('show_menu').addEventListener('click', show_menu);
+    document.getElementById('hide_menu').addEventListener('click', hide_menu);
+
+    document.getElementById('show_drive').addEventListener('click', show_drive);
+    document.getElementById('hide_drive').addEventListener('click', hide_drive);
+}
+
+function initJoystick() {
 
     JoyDrive = new JoyStick('joyDrive', {
         "autoReturnToCenter": true,
@@ -97,14 +102,9 @@ function systemInit() {
         "internalStrokeColor": "#b90",
         "externalLineWidth": 2,
         "externalStrokeColor": "#b90"
-    }, function(stickData) {
+    }, function (stickData) {
         if (JoyDriveX != stickData.x || JoyDriveY != stickData.y) {
             console.log("joystick action");
-
-            joyDrivePosX.value = stickData.xPosition;
-            joyDrivePosY.value = stickData.yPosition;
-            joyDriveRelX.value = stickData.x;
-            joyDriveRelY.value = stickData.y;
 
             JoyBodyX = stickData.x;
             JoyBodyY = stickData.y;
@@ -112,6 +112,29 @@ function systemInit() {
             sendDriveUpdate();
         }
     });
+}
+
+function show_menu() {
+    let div = document.getElementById('menu');
+    div.style.visibility = 'visible';
+}
+function hide_menu() {
+    let div = document.getElementById('menu');
+    div.style.visibility = 'hidden';
+}
+function show_drive() {
+    let div = document.getElementById('drive');
+    div.style.visibility = 'visible';
+}
+function hide_drive() {
+    let div = document.getElementById('drive');
+    div.style.visibility = 'hidden';
+}
+
+function systemInit() {
+
+    initBindings();
+    initJoystick();
 }
 
 )====";

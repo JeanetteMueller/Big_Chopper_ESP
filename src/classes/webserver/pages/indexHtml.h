@@ -1,51 +1,107 @@
 const char indexHtml[] = R"====(
-<a href="/settings.html">Settings</a>
 
-<h5>Drive</h5>
-<div id="joyDrive" class="joystick"></div>
-Pos X:<input id="joyDrivePosX" type="text" /> 
-Pos Y:<input id="joyDrivePosY" type="text" />
-Rel X :<input id="joyDriveRelX" type="text" /> 
-Rel Y :<input id="joyDriveRelY" type="text" />
+<div class="statusbar">
+        <button id="show_menu">Menu</button>
+        <button id="show_drive">Drive</button>
+    </div>
+    <!-- Overlays start -->
+    <div id="menu">
+        <div class="statusbar">
+            <button id="hide_menu">Close X</button>
+        </div>
 
-<h4>Body</h4>
-<h5>Arms</h5>
-<input type="checkbox" id="bodyArmLeft" name="bodyArmLeft" value="1" onchange="sendBodyUpdate()">
-<label for="bodyArmLeft">Left</label>
-<input type="checkbox" id="bodyArmRight" name="bodyArmRight" value="1" onchange="sendBodyUpdate()">
-<label for="bodyArmRight">Right</label>
-<br />
-<input type="checkbox" id="utilityArm" name="utilityArm" value="1" onchange="sendBodyUpdate()">
-<label for="utilityArm">Utility Arm</label>
-<input type="checkbox" id="utilityArmGripper" name="utilityArmGripper" value="1" onchange="sendBodyUpdate()">
-<label for="utilityArmGripper">Utility Arm Gripper</label>
+        <a href="/settings.html">Settings</a>
+    </div>
+    <div id="drive">
+        <div class="statusbar">
+            <button id="hide_drive">Close X</button>
+        </div>
+        <h4>Drive</h4>
+        <div id="joyDrive" class="joystick"></div>
+    </div>
+    <!-- Overlays end -->
 
-<h4>Dome</h4>
-<h5>Rotate</h5>
-<input id="domeRotate" type="range" min="1000" max="2000" value="1500" class="slider" onchange="sendDomeUpdate()">
-<h5>Left</h5>
-<input id="domeLeftArmExtend" type="range" min="1000" max="2000" value="1000" class="slider" onchange="sendDomeUpdate()">
-<label for="domeLeftArmExtend">Extend Left</label>
-<input id="domeLeftArmRotate" type="range" min="1000" max="2000" value="1000" class="slider" onchange="sendDomeUpdate()">
-<label for="domeLeftArmRotate">Rotate Left</label>
+    <div class="contentMax">
+        <h4>Rotate Dome</h4>
+        <input id="domeRotate" type="range" min="1000" max="2000" value="1500" class="slider"
+            onchange="sendDomeUpdate()">
+        <hr>
+        <h4>Utility Arms</h4>
+        <div class="contentHalfBox">
+            <input type="checkbox" id="utilityArm" name="utilityArm" value="1" onchange="sendBodyUpdate()">
+            <label for="utilityArm" class="interaction">Utility Arm</label>
+        </div>
 
-<h5>Right</h5>
-<input id="domeRightArmExtend" type="range" min="1000" max="2000" value="1000" class="slider" onchange="sendDomeUpdate()">
-<label for="domeRightArmExtend">Extend Right</label>
-<input id="domeRightArmRotate" type="range" min="1000" max="2000" value="1000" class="slider" onchange="sendDomeUpdate()">
-<label for="domeRightArmRotate">Rotate Right</label>
+        <div class="contentHalfBox">
+            <input type="checkbox" id="utilityArmGripper" name="utilityArmGripper" value="1"
+                onchange="sendBodyUpdate()">
+            <label for="utilityArmGripper" class="interaction">Utility Arm Gripper</label>
+        </div>
+        <hr>
+        <h4>Periscope</h4>
+        <div class="contentHalfBox">
+            <label for="periscopeLift" class="centered">Lift</label>
+            <input id="periscopeLift" type="range" min="1000" max="2000" value="1000" class="slider"
+                onchange="sendDomeUpdate()">
+        </div>
+        <div class="contentHalfBox">
+            <label for="periscopeRotate" class="centered">Rotate</label>
+            <input id="periscopeRotate" type="range" min="1000" max="2000" value="1500" class="slider"
+                onchange="sendDomeUpdate()">
+        </div>
+    </div>
+    <hr>
+    <div class="content contentLeft">
+        <h4>Left</h4>
 
-<h4>Periscope</h4>
-<input id="periscopeLift" type="range" min="1000" max="2000" value="1000" class="slider" onchange="sendDomeUpdate()">
-<label for="periscopeLift">Lift</label>
-<input id="periscopeRotate" type="range" min="1000" max="2000" value="1500" class="slider" onchange="sendDomeUpdate()">
-<label for="periscopeRotate">Rotate</label>
+        <div class="contentHalfBox">
+            <label for="domeLeftArmExtend" class="centered">Extend</label>
+            <input id="domeLeftArmExtend" type="range" min="1000" max="2000" value="2000" class="slider"
+                onchange="sendDomeUpdate()">
+        </div>
+        <div class="contentHalfBox">
+            <label for="domeLeftArmRotate" class="centered">Rotate</label>
+            <input id="domeLeftArmRotate" type="range" min="1000" max="2000" value="2000" class="slider"
+                onchange="sendDomeUpdate()">
+        </div>
 
-<script>
-    window.onload = function () {
-        console.log('Dokument geladen');
-        systemInit();
-    }
-</script>
+
+        <input type="checkbox" id="bodyArmLeft" name="bodyArmLeft" value="1" onchange="sendBodyUpdate()">
+        <label for="bodyArmLeft" class="interaction">Dataport</label>
+
+
+
+    </div>
+    <div class="content contentRight">
+        <h4>Right</h4>
+
+        <div class="contentHalfBox">
+            <label for="domeRightArmRotate" class="centered">Rotate</label>
+            <input id="domeRightArmRotate" type="range" min="1000" max="2000" value="1000" class="slider"
+                onchange="sendDomeUpdate()">
+        </div>
+        <div class="contentHalfBox">
+            <label for="domeRightArmExtend" class="centered">Extend</label>
+            <input id="domeRightArmExtend" type="range" min="1000" max="2000" value="1000" class="slider"
+                onchange="sendDomeUpdate()">
+        </div>
+
+
+
+        <input type="checkbox" id="bodyArmRight" name="bodyArmRight" value="1" onchange="sendBodyUpdate()">
+        <label for="bodyArmRight" class="interaction">Saw</label>
+        <br />
+
+
+    </div>
+
+
+
+    <script>
+        window.onload = function () {
+            console.log('Dokument geladen');
+            systemInit();
+        }
+    </script>
 
 )====";
