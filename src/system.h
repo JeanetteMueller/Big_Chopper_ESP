@@ -94,11 +94,8 @@ void loop()
     }
     else
     {
-        int16_t newX = map(webServer->drive_x, -100, 100, 1000, 2000);
-        chopper->horizontal = newX;
-
-        int16_t newY = map(webServer->drive_y, -100, 100, 1000, 2000);
-        chopper->vertical = newY;
+        chopper->horizontal = 1500;
+        chopper->vertical = 1500;
     }
 
     // Dome & Periscope Rotation
@@ -107,57 +104,81 @@ void loop()
         if (ibusVar02 >= 1500 && ibusVar02 <= 2000)
         {
             chopper->body->setDomeRotation(1500);
+            webServer->domeRotate = 1500;
 
             int16_t liftPeriscope = map(ibusVar02, 1500, 2000, 0, 255);
             chopper->dome->setPeriscopeLift(liftPeriscope);
+            webServer->domePeriscopeLift = liftPeriscope;
 
             int16_t rotationPeriscope = map(ibusVar03, 1000, 2000, -127, 127);
             chopper->dome->setPeriscopeRotation(rotationPeriscope);
+            webServer->domePeriscopeRotate = rotationPeriscope;
         }
         else
         {
             chopper->dome->setPeriscopeLift(0);
             chopper->dome->setPeriscopeRotation(0);
 
-            if (ibusVar03 != 0)
-            {
-                chopper->body->setDomeRotation(ibusVar03);
-            }
-            else
-            {
-                chopper->body->setDomeRotation(webServer->domeRotate);
-            }
+            chopper->body->setDomeRotation(ibusVar03);
+            webServer->domeRotate = ibusVar03;
         }
     }
     else
     {
-        Serial.println(F("Do Webserver Dome Rotation action"));
         chopper->body->setDomeRotation(webServer->domeRotate);
-
-
-        Serial.println(F("Do Webserver periscope action"));
-        int16_t liftPeriscope = map(webServer->domePeriscopeLift, 1000, 2000, 0, 255);
-        chopper->dome->setPeriscopeLift(liftPeriscope);
-
-        int16_t rotationPeriscope = map(webServer->domePeriscopeRotate, 1000, 2000, -127, 127);
-        chopper->dome->setPeriscopeRotation(rotationPeriscope);
+        chopper->dome->setPeriscopeLift(webServer->domePeriscopeLift);
+        chopper->dome->setPeriscopeRotation(webServer->domePeriscopeRotate);
     }
 
-    // Dome Arms
-    chopper->dome->setRightArmExtend(ibusVar05);
-    chopper->dome->setLeftArmExtend(ibusVar04);
 
-    chopper->dome->setRightArmRotation(ibusVar05);
-    chopper->dome->setLeftArmRotation(ibusVar04);
+    chopper->dome->setRightArmExtend(webServer->domeArmsRightExtend);
+    chopper->dome->setLeftArmExtend(webServer->domeArmsLeftExtend);
 
-    // Dome Shake
-    if (ibusVar07 == 2000)
+    // Dome Right Arm
+    if (ibusVar05 != 0)
     {
-        chopper->body->domeShake = true;
+        if (ibusVar05 >= 1000 && ibusVar05 <= 2000)
+        {
+            chopper->dome->setRightArmRotation(ibusVar05);
+            webServer->domeArmsRightRotate = ibusVar05;
+        }
     }
     else
     {
-        chopper->body->domeShake = false;
+        chopper->dome->setRightArmRotation(webServer->domeArmsRightRotate);
+    }
+
+    // Dome Left Arm
+    if (ibusVar04 != 0)
+    {
+        if (ibusVar04 >= 1000 && ibusVar04 <= 2000)
+        {
+            chopper->dome->setLeftArmRotation(ibusVar04);
+            webServer->domeArmsLeftRotate = ibusVar04;
+        }
+    }
+    else
+    {
+        chopper->dome->setLeftArmRotation(webServer->domeArmsLeftRotate);
+    }
+
+    // Dome Shake
+    if (ibusVar07 != 0)
+    {
+        if (ibusVar07 == 2000)
+        {
+            chopper->body->domeShake = true;
+            webServer->domeShake = true;
+        }
+        else
+        {
+            chopper->body->domeShake = false;
+            webServer->domeShake = false;
+        }
+    }
+    else
+    {
+        chopper->body->domeShake = webServer->domeShake;
     }
 
     // Lights
@@ -185,10 +206,12 @@ void loop()
         if (ibusVar06 >= 1500 && ibusVar06 <= 2000)
         {
             chopper->body->bodyArmLeft = true;
+            webServer->bodyArmLeft = true;
         }
         else
         {
             chopper->body->bodyArmLeft = false;
+            webServer->bodyArmLeft = false;
         }
     }
     else
@@ -201,10 +224,12 @@ void loop()
         if (ibusVar09 >= 1500 && ibusVar09 <= 2000)
         {
             chopper->body->bodyArmRight = true;
+            webServer->bodyArmRight = true;
         }
         else
         {
             chopper->body->bodyArmRight = false;
+            webServer->bodyArmRight = false;
         }
     }
     else
@@ -212,21 +237,34 @@ void loop()
         chopper->body->bodyArmRight = webServer->bodyArmRight;
     }
 
-    if (ibusVar08 >= 1500 && ibusVar08 <= 2000)
+    if (ibusVar08 != 0)
     {
-        chopper->body->utilityArm = true;
-        if (ibusVar08 == 2000)
+        if (ibusVar08 >= 1500 && ibusVar08 <= 2000)
         {
-            chopper->body->utilityArmGripper = true;
+            chopper->body->utilityArm = true;
+            webServer->utilityArm = true;
+            if (ibusVar08 == 2000)
+            {
+                chopper->body->utilityArmGripper = true;
+                webServer->utilityArmGripper = true;
+            }
+            else
+            {
+                chopper->body->utilityArmGripper = false;
+                webServer->utilityArmGripper = false;
+            }
         }
         else
         {
             chopper->body->utilityArmGripper = false;
+            webServer->utilityArmGripper = false;
+
+            chopper->body->utilityArm = false;
+            webServer->utilityArm = false;
         }
     }
     else
     {
-
         chopper->body->utilityArm = webServer->utilityArm;
         if (webServer->utilityArmGripper && webServer->utilityArm)
         {

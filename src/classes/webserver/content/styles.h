@@ -19,10 +19,18 @@ body {
     border: 0;
 }
 
-hr {
-    margin: 10px;
+.row {
+    width: 100%;
+    float:left;
+    display: block;
+    text-align: center;
+    padding: 0;
+    margin: 0;
 }
 
+a {
+    color: #fff;
+}
 a:link,
 a:visited,
 a:active {
@@ -31,6 +39,12 @@ a:active {
 
 h4, h5 {
     text-align: center;
+}
+h4 {
+    font-size: 16px;
+}
+h5 {
+    font-size: 14px;
 }
 
 .statusbar {
@@ -53,51 +67,39 @@ h4, h5 {
     text-align: center;
 }
 
-.content {
-    width: calc(50% - 21px);
-    float: left;
-    min-height: 100%;
-    padding: 10px;
-}
-
 .centered{
     width: 100%;
     display: block;
     text-align: center;
 }
 
-.contentLeft {
-    border-right: 2px solid #333;
+.cLeft {
+    text-align: left;
+}
+.cLeft > h4 {
+    text-align: left;
 }
 
-.contentRight {
+.cRight {
     text-align: right;
 }
-.contentRight > h4 {
+.cRight > h4 {
     text-align: right;
 }
 
-.contentHalfBox {
-    width:50%;
+.c25, .c50, .c75 {
     float:left;
     align-items: center;
     text-align: center;
 }
-.contentMax {
-    width: 100%;
+.c75 {
+    width:75%;
 }
-
-#drive {
-    z-index: 10000;
-    display: block;
-    width: 100%;
-    height: 100%;
-    background-color: blue;
-    position: absolute;
-    top: 0px;
-    left: 0px;
-    visibility: hidden;
-    text-align: center;
+.c50 {
+    width:50%;
+}
+.c25 {
+    width:25%;
 }
 
 button {
@@ -110,25 +112,16 @@ button {
     border-radius: 5px;
 }
 
-.button {
-    background-color: #333;
-    display: inline-block;
-    padding: 5px;
-    margin: 5px;
-    color: #fff;
-    text-decoration: none;
-    border-radius: 5px;
-}
-
 .interaction {
-    padding: 5px;
-    margin: 5px;
+    padding: 4px;
+    margin: 4px;
     background-color: #666;
-    min-height: 34px;
-    font-size: 28px;
+    min-height: 36px;
+    font-size: 20px;
     color: #fff;
     display: inline-block;
     border-radius: 5px;
+    cursor: pointer;
 }
 
 input {

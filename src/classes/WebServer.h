@@ -37,9 +37,10 @@ public:
     bool utilityArm = false;
     bool utilityArmGripper = false;
 
+    bool domeShake = false;
     int16_t domeRotate = 1500;
-    double domeArmsLeftExtend = 0;
-    double domeArmsRightExtend = 0;
+    bool domeArmsLeftExtend = false;
+    bool domeArmsRightExtend = false;
     double domeArmsLeftRotate = 0;
     double domeArmsRightRotate = 0;
 
@@ -60,6 +61,7 @@ private:
     String getPage(Page page, AsyncWebServerRequest *request);
 
     void apiPostAction(AsyncWebServerRequest *request, uint8_t* data, size_t len, size_t index, size_t total);
+    void apiGetAction(AsyncWebServerRequest *request, uint8_t *data, size_t len, size_t index, size_t total);
     void postAction(AsyncWebServerRequest *request);
 
     void notFound(AsyncWebServerRequest *request);

@@ -10,6 +10,10 @@ void WebServer::start()
     _server->on(
         "/api/post.json", HTTP_POST, [&](AsyncWebServerRequest *request) {}, nullptr, [&](AsyncWebServerRequest *request, uint8_t *data, size_t len, size_t index, size_t total)
         { apiPostAction(request, data, len, index, total); });
+    
+    _server->on(
+        "/api/get.json", HTTP_POST, [&](AsyncWebServerRequest *request) {}, nullptr, [&](AsyncWebServerRequest *request, uint8_t *data, size_t len, size_t index, size_t total)
+        { apiGetAction(request, data, len, index, total); });
 
     // _server->on("/", HTTP_POST, [&](AsyncWebServerRequest *request)
     //             { postAction(request); });
@@ -49,8 +53,6 @@ void WebServer::start()
 
 void WebServer::apiPostAction(AsyncWebServerRequest *request, uint8_t *data, size_t len, size_t index, size_t total)
 {
-    Serial.println("apiPostAction!");
-
     JsonDocument json;
     deserializeJson(json, data, len);
 
@@ -65,6 +67,10 @@ void WebServer::apiPostAction(AsyncWebServerRequest *request, uint8_t *data, siz
 
     if (!json["dome"].isNull())
     {
+        domeShake = json["dome"]["shake"];
+        Serial.print("domeShake: ");
+        Serial.println(domeShake);
+
         domeRotate = json["dome"]["rotate"];
         Serial.print("domeRotate: ");
         Serial.println(domeRotate);
@@ -92,8 +98,34 @@ void WebServer::apiPostAction(AsyncWebServerRequest *request, uint8_t *data, siz
         Serial.print(" rotate: ");
         Serial.println(domePeriscopeRotate);
     }
+
     String result;
     serializeJson(json, result);
+
+    request->send(200, "application/json", result);
+}
+
+void WebServer::apiGetAction(AsyncWebServerRequest *request, uint8_t *data, size_t len, size_t index, size_t total)
+{
+    JsonDocument r = JsonDocument();
+
+    r["body"]["arms"]["left"] = bodyArmLeft;
+    r["body"]["arms"]["right"] = bodyArmRight;
+    r["body"]["utility"]["arm"] = utilityArm;
+    r["body"]["utility"]["gripper"] = utilityArmGripper;
+
+    r["dome"]["shake"] = domeShake;
+    r["dome"]["rotate"] = domeRotate;
+    r["dome"]["arms"]["left"]["extend"] = domeArmsLeftExtend;
+    r["dome"]["arms"]["right"]["extend"] = domeArmsRightExtend;
+    r["dome"]["arms"]["left"]["rotate"] = domeArmsLeftRotate;
+    r["dome"]["arms"]["right"]["rotate"] = domeArmsRightRotate;
+
+    r["dome"]["periscope"]["lift"] = domePeriscopeLift;
+    r["dome"]["periscope"]["rotate"] = domePeriscopeRotate;
+
+    String result;
+    serializeJson(r, result);
 
     request->send(200, "application/json", result);
 }

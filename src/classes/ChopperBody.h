@@ -7,8 +7,6 @@
 
 #include <Adafruit_PWMServoDriver.h>
 
-#define SERVO_FREQ (uint16_t)60
-
 #define pwm_body_pin_0 (byte)0
 #define pwm_body_pin_1 (byte)1
 #define pwm_body_pin_2 (byte)2

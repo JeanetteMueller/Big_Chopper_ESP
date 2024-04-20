@@ -4,8 +4,6 @@
 #include "../submodules/JxTaskManager/JxTaskManager.h"
 #include <Adafruit_PWMServoDriver.h>
 
-#define SERVO_FREQ (uint16_t)60
-
 #define pwm_head_pin_periscope_rotate (byte)0
 #define pwm_head_pin_periscope_lift (byte)1
 #define pwm_head_pin_2 (byte)2
@@ -42,8 +40,8 @@ public:
     double current_extendRightArm = 160;
     double current_extendLeftArm = 0;
 
-    void setLeftArmExtend(double extend);
-    void setRightArmExtend(double extend);
+    void setLeftArmExtend(bool extend);
+    void setRightArmExtend(bool extend);
 
     void setLeftArmRotation(double rotation);
     void setRightArmRotation(double rotation);
@@ -52,9 +50,9 @@ private:
     bool _debug = false;
     Adafruit_PWMServoDriver pwm_head = Adafruit_PWMServoDriver(0x60);
 
-    double _minPeriscopeLift = 78;
-    double _maxPeriscopeLift = 170;
-    double _minPeriscopeRotation = 70 * 2;
+    double _minPeriscopeLift = 80;
+    double _maxPeriscopeLift = 165;
+    double _minPeriscopeRotation = 160;
     double _maxPeriscopeRotation = 0;
 
     int16_t _liftPeriscope = 0;

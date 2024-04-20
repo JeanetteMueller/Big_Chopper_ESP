@@ -22,16 +22,26 @@ function sendBodyUpdate() {
 }
 
 function sendDomeUpdate() {
+
+    if (document.getElementById("domeRightArmExtend").value == 1000) {
+        document.getElementById("domeRightArmRotate").value = 1000;
+    }
+
+    if (document.getElementById("domeLeftArmExtend").value == 2000) {
+        document.getElementById("domeLeftArmRotate").value = 2000;
+    }
+
     const data = {
         dome: {
+            shake: document.getElementById("domeShake").checked,
             rotate: document.getElementById("domeRotate").value,
             arms: {
                 left: {
-                    extend: document.getElementById("domeLeftArmExtend").value,
-                    rotate: document.getElementById("domeLeftArmRotate").value
+                    extend: document.getElementById("domeLeftArmExtend").checked,
+                    rotate: 3000 - document.getElementById("domeLeftArmRotate").value
                 },
                 right: {
-                    extend: document.getElementById("domeRightArmExtend").value,
+                    extend: document.getElementById("domeRightArmExtend").checked,
                     rotate: document.getElementById("domeRightArmRotate").value
                 }
             },
@@ -43,6 +53,15 @@ function sendDomeUpdate() {
     };
 
     sendData(data);
+}
+
+function getServerData() {
+    const data = {};
+    
+    postData("/api/get.json", data).then(json => {
+        console.log("Result from Server: ");
+        callbackActionOnServerGet(json);
+    });
 }
 
 async function postData(url = "", data = {}) {
@@ -65,12 +84,34 @@ function sendData(data) {
 
     postData("/api/post.json", data).then(json => {
         console.log("Result from Server: ");
-        callbackActionOnServer(json);
+        callbackActionOnServerPost(json);
     });
 }
 
-function callbackActionOnServer(json) {
+function callbackActionOnServerPost(json) {
     console.log(json);
+}
+
+function callbackActionOnServerGet(json) {
+    console.log(json);
+
+    document.getElementById("domeShake").checked = json.dome.shake;
+    document.getElementById("domeRotate").value = json.dome.rotate;
+
+    document.getElementById("domeLeftArmExtend").checked = json.dome.arms.left.extend;
+    document.getElementById("domeRightArmExtend").checked = json.dome.arms.right.extend;
+
+    document.getElementById("domeLeftArmRotate").value = 3000 - json.dome.arms.left.rotate;
+    document.getElementById("domeRightArmRotate").value = json.dome.arms.right.rotate;
+
+    document.getElementById("bodyArmLeft").checked = json.body.arms.left;
+    document.getElementById("bodyArmRight").checked= json.body.arms.right;
+
+    document.getElementById("utilityArm").checked = json.body.utility.arm;
+    document.getElementById("utilityArmGripper").checked = json.body.utility.gripper;
+
+    document.getElementById("periscopeLift").value = json.dome.periscope.lift;
+    document.getElementById("periscopeRotate").value = json.dome.periscope.rotate;
 }
 
 function initBindings() {
@@ -89,6 +130,8 @@ function hide_menu() {
 
 function systemInit() {
     initBindings();
+
+    const intervalID = setInterval(getServerData, 200);
 }
 
 )====";
