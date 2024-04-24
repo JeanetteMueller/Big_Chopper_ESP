@@ -7,8 +7,8 @@
 
 #include <Adafruit_PWMServoDriver.h>
 
-#define pwm_body_pin_0 (byte)0
-#define pwm_body_pin_1 (byte)1
+#define pwm_body_pin_dome_rotation_dir (byte)0
+#define pwm_body_pin_dome_rotation_pwm (byte)1
 #define pwm_body_pin_2 (byte)2
 #define pwm_body_pin_3 (byte)3
 #define pwm_body_pin_right_door (byte)4

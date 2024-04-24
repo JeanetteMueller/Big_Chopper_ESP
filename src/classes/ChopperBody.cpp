@@ -96,7 +96,7 @@ void ChopperBody::setup()
     pwm_body.setOscillatorFrequency(27000000);
     pwm_body.setPWMFreq(_SERVO_FREQ);
 
-    domeRotation->setupMotor(PWM_DIR, 0, 2);
+    domeRotation->setupMotor(pwm_body, pwm_body_pin_dome_rotation_dir, pwm_body_pin_dome_rotation_pwm);
 
     setupDomeShake();
 
