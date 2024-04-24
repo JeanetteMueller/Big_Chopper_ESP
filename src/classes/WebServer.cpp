@@ -10,7 +10,7 @@ void WebServer::start()
     _server->on(
         "/api/post.json", HTTP_POST, [&](AsyncWebServerRequest *request) {}, nullptr, [&](AsyncWebServerRequest *request, uint8_t *data, size_t len, size_t index, size_t total)
         { apiPostAction(request, data, len, index, total); });
-    
+
     _server->on(
         "/api/get.json", HTTP_POST, [&](AsyncWebServerRequest *request) {}, nullptr, [&](AsyncWebServerRequest *request, uint8_t *data, size_t len, size_t index, size_t total)
         { apiGetAction(request, data, len, index, total); });
@@ -60,44 +60,59 @@ void WebServer::apiPostAction(AsyncWebServerRequest *request, uint8_t *data, siz
     {
         bodyArmLeft = json["body"]["arms"]["left"];
         bodyArmRight = json["body"]["arms"]["right"];
-
         utilityArm = json["body"]["utility"]["arm"];
         utilityArmGripper = json["body"]["utility"]["gripper"];
+
+        Serial.print("body: ");
+
+        Serial.print("tools: left ");
+        Serial.print(bodyArmLeft);
+        Serial.print(" right: ");
+        Serial.print(bodyArmRight);
+
+        Serial.print(" | arm: ");
+        Serial.print(utilityArm);
+        Serial.print(" gripper: ");
+        Serial.print(utilityArmGripper);
     }
 
     if (!json["dome"].isNull())
     {
         domeShake = json["dome"]["shake"];
-        Serial.print("domeShake: ");
-        Serial.println(domeShake);
-
         domeRotate = json["dome"]["rotate"];
-        Serial.print("domeRotate: ");
-        Serial.println(domeRotate);
-
         domeArmsLeftExtend = json["dome"]["arms"]["left"]["extend"];
         domeArmsRightExtend = json["dome"]["arms"]["right"]["extend"];
         domeArmsLeftRotate = json["dome"]["arms"]["left"]["rotate"];
         domeArmsRightRotate = json["dome"]["arms"]["right"]["rotate"];
-
-        Serial.print("domeLeftArm extend: ");
-        Serial.print(domeArmsLeftExtend);
-        Serial.print(" rotate: ");
-        Serial.println(domeArmsLeftRotate);
-
-        Serial.print("domeRightArm extend: ");
-        Serial.print(domeArmsRightExtend);
-        Serial.print(" rotate: ");
-        Serial.println(domeArmsRightRotate);
-
         domePeriscopeLift = json["dome"]["periscope"]["lift"];
         domePeriscopeRotate = json["dome"]["periscope"]["rotate"];
 
-        Serial.print("Periscope lift: ");
+        Serial.print("dome: ");
+
+        Serial.print("shake: ");
+        Serial.print(domeShake);
+
+        Serial.print(" rotate: ");
+        Serial.print(domeRotate);
+
+        Serial.print(" | leftArm extend: ");
+        Serial.print(domeArmsLeftExtend);
+        Serial.print(" rotate: ");
+        Serial.print(domeArmsLeftRotate);
+
+        Serial.print(" | rightArm extend: ");
+        Serial.print(domeArmsRightExtend);
+        Serial.print(" rotate: ");
+        Serial.print(domeArmsRightRotate);
+
+        Serial.print(" | Periscope lift: ");
         Serial.print(domePeriscopeLift);
         Serial.print(" rotate: ");
-        Serial.println(domePeriscopeRotate);
+        Serial.print(domePeriscopeRotate);
+        
     }
+    Serial.println("");
+    Serial.println("---");
 
     String result;
     serializeJson(json, result);

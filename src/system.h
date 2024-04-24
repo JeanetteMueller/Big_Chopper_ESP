@@ -130,7 +130,6 @@ void loop()
         chopper->dome->setPeriscopeRotation(webServer->domePeriscopeRotate);
     }
 
-
     chopper->dome->setRightArmExtend(webServer->domeArmsRightExtend);
     chopper->dome->setLeftArmExtend(webServer->domeArmsLeftExtend);
 
@@ -181,24 +180,7 @@ void loop()
         chopper->body->domeShake = webServer->domeShake;
     }
 
-    // Lights
-    if (ibusVar09 == 2000)
-    {
-        chopper->lights->currentMood = ChopperLights::LightsMood::terminator;
-    }
-    else
-    {
-        chopper->lights->currentMood = ChopperLights::LightsMood::basic;
-    }
-
-    if (ibusVar02 >= 1650 && ibusVar02 <= 2000)
-    {
-        chopper->lights->periscopeIsOn = true;
-    }
-    else
-    {
-        chopper->lights->periscopeIsOn = false;
-    }
+    
 
     // Body Tools
     if (ibusVar06 != 0)
@@ -237,6 +219,27 @@ void loop()
         chopper->body->bodyArmRight = webServer->bodyArmRight;
     }
 
+
+    // Lights
+    if (ibusVar02 >= 1650 && ibusVar02 <= 2000)
+    {
+        chopper->lights->periscopeIsOn = true;
+    }
+    else
+    {
+        chopper->lights->periscopeIsOn = false;
+    }
+
+    if (chopper->body->bodyArmRight)
+    {
+        chopper->lights->currentMood = ChopperLights::LightsMood::terminator;
+    }
+    else
+    {
+        chopper->lights->currentMood = ChopperLights::LightsMood::basic;
+    }
+
+    //Utility Arms
     if (ibusVar08 != 0)
     {
         if (ibusVar08 >= 1500 && ibusVar08 <= 2000)

@@ -7,7 +7,7 @@ Chopper::Chopper(bool debug)
     // init
     body = new ChopperBody(debug);
     dome = new ChopperDome(debug);
-    lights = new ChopperLights(1, 150, _debug);
+    lights = new ChopperLights(2, 150, _debug);
 }
 
 void Chopper::setup()

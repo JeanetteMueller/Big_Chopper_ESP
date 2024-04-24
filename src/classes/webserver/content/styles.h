@@ -131,18 +131,12 @@ input {
 
 .slider {
     -webkit-appearance: none;
-    /* Override default CSS styles */
     appearance: none;
-    width: calc(100% - 40px);;
-    /* Full-width */
+    width: calc(100% - 40px);
     height: 30px;
-    /* Specified height */
     background: #333;
-    /* Grey background */
     outline: none;
-    /* Remove outline */
     -webkit-transition: .2s;
-    /* 0.2 seconds transition on hover */
     transition: opacity .2s;
     border-radius: 20px;
     padding: 10px;
@@ -150,28 +144,19 @@ input {
 
 .slider::-webkit-slider-thumb {
     -webkit-appearance: none;
-    /* Override default look */
     appearance: none;
     width: 30px;
-    /* Set a specific slider handle width */
     height: 30px;
-    /* Slider handle height */
     background: white;
-    /* Green background */
     cursor: pointer;
-    /* Cursor on hover */
     border-radius: 30px;
 }
 
 .slider::-moz-range-thumb {
     width: 30px;
-    /* Set a specific slider handle width */
     height: 30px;
-    /* Slider handle height */
     background: white;
-    /* Green background */
     cursor: pointer;
-    /* Cursor on hover */
     border-radius: 30px;
 }
 
