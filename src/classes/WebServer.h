@@ -39,10 +39,10 @@ public:
 
     bool domeShake = false;
     int16_t domeRotate = 1500;
-    bool domeArmsLeftExtend = false;
-    bool domeArmsRightExtend = false;
-    double domeArmsLeftRotate = 0;
-    double domeArmsRightRotate = 0;
+    double domeArmsLeftExtend = 1000;
+    double domeArmsRightExtend = 1000;
+    double domeArmsLeftRotate = 1000;
+    double domeArmsRightRotate = 1000;
 
     double domePeriscopeLift = 0;
     double domePeriscopeRotate = 0;

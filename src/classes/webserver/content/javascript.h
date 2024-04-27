@@ -23,11 +23,11 @@ function sendBodyUpdate() {
 
 function sendDomeUpdate() {
 
-    if (document.getElementById("domeRightArmExtend").value == 1000) {
+    if (document.getElementById("domeRightArmExtend").checked == false) {
         document.getElementById("domeRightArmRotate").value = 1000;
     }
 
-    if (document.getElementById("domeLeftArmExtend").value == 2000) {
+    if (document.getElementById("domeLeftArmExtend").checked == false) {
         document.getElementById("domeLeftArmRotate").value = 2000;
     }
 
@@ -37,11 +37,11 @@ function sendDomeUpdate() {
             rotate: document.getElementById("domeRotate").value,
             arms: {
                 left: {
-                    extend: document.getElementById("domeLeftArmExtend").checked,
+                    extend: document.getElementById("domeLeftArmExtend").checked ? 1200 : 1000,
                     rotate: 3000 - document.getElementById("domeLeftArmRotate").value
                 },
                 right: {
-                    extend: document.getElementById("domeRightArmExtend").checked,
+                    extend: document.getElementById("domeRightArmExtend").checked ? 1200 : 1000,
                     rotate: document.getElementById("domeRightArmRotate").value
                 }
             },
@@ -98,8 +98,8 @@ function callbackActionOnServerGet(json) {
     document.getElementById("domeShake").checked = json.dome.shake;
     document.getElementById("domeRotate").value = json.dome.rotate;
 
-    document.getElementById("domeLeftArmExtend").checked = json.dome.arms.left.extend;
-    document.getElementById("domeRightArmExtend").checked = json.dome.arms.right.extend;
+    document.getElementById("domeLeftArmExtend").checked = json.dome.arms.left.extend >= 1010;
+    document.getElementById("domeRightArmExtend").checked = json.dome.arms.right.extend >= 1010;
 
     document.getElementById("domeLeftArmRotate").value = 3000 - json.dome.arms.left.rotate;
     document.getElementById("domeRightArmRotate").value = json.dome.arms.right.rotate;

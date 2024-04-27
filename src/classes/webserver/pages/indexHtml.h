@@ -59,7 +59,7 @@ const char indexHtml[] = R"====(
         <div class="row">
         <div class="c75">
             <label for="domeLeftArmRotate" class="centered">Rotate</label>
-            <input id="domeLeftArmRotate" type="range" min="1000" max="2000" value="1500" class="slider" onInput="sendDomeUpdate()">
+            <input id="domeLeftArmRotate" type="range" min="1000" max="2000" value="2000" class="slider" onInput="sendDomeUpdate()">
         </div>
         <div class="c25">
             <input type="checkbox" id="domeLeftArmExtend" name="domeLeftArmExtend" value="1" onchange="sendDomeUpdate()"><br />
@@ -79,7 +79,7 @@ const char indexHtml[] = R"====(
         </div>
         <div class="c75">
             <label for="domeRightArmRotate" class="centered">Rotate</label>
-            <input id="domeRightArmRotate" type="range" min="1000" max="2000" value="1500" class="slider" onInput="sendDomeUpdate()">
+            <input id="domeRightArmRotate" type="range" min="1000" max="2000" value="1000" class="slider" onInput="sendDomeUpdate()">
         </div>
         </div>
         <input type="checkbox" id="bodyArmRight" name="bodyArmRight" value="1" onchange="sendBodyUpdate()">

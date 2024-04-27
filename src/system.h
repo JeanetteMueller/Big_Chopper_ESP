@@ -130,20 +130,22 @@ void loop()
         chopper->dome->setPeriscopeRotation(webServer->domePeriscopeRotate);
     }
 
-    chopper->dome->setRightArmExtend(webServer->domeArmsRightExtend);
-    chopper->dome->setLeftArmExtend(webServer->domeArmsLeftExtend);
+    
+    
 
     // Dome Right Arm
     if (ibusVar05 != 0)
     {
         if (ibusVar05 >= 1000 && ibusVar05 <= 2000)
         {
+            chopper->dome->setRightArmExtend(ibusVar05);
             chopper->dome->setRightArmRotation(ibusVar05);
             webServer->domeArmsRightRotate = ibusVar05;
         }
     }
     else
     {
+        chopper->dome->setRightArmExtend(webServer->domeArmsRightExtend);
         chopper->dome->setRightArmRotation(webServer->domeArmsRightRotate);
     }
 
@@ -152,12 +154,14 @@ void loop()
     {
         if (ibusVar04 >= 1000 && ibusVar04 <= 2000)
         {
+            chopper->dome->setLeftArmExtend(ibusVar04);
             chopper->dome->setLeftArmRotation(ibusVar04);
             webServer->domeArmsLeftRotate = ibusVar04;
         }
     }
     else
     {
+        chopper->dome->setLeftArmExtend(webServer->domeArmsLeftExtend);
         chopper->dome->setLeftArmRotation(webServer->domeArmsLeftRotate);
     }
 

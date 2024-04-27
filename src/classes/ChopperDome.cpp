@@ -14,7 +14,7 @@ void ChopperDome::setupRightArmTools()
     rotateServoToDegree(pwm_head_pin_arms_right_extend, _rightArmExtend_min);
 
     double extendMin = 1010;
-    double extendMax = 2010;
+    double extendMax = 2000;
     double extendClosed = 1000;
 
     // check if swith is active
@@ -52,7 +52,7 @@ void ChopperDome::setupLeftArmTools()
     rotateServoToDegree(pwm_head_pin_arms_left_extend, _leftArmExtend_min);
 
     double extendMin = 1010;
-    double extendMax = 2010;
+    double extendMax = 2000;
     double extendClosed = 1000;
 
     // check if swith is active
@@ -146,13 +146,13 @@ void ChopperDome::setPeriscopeRotation(int8_t rotationValue)
     }
 }
 
-void ChopperDome::setLeftArmExtend(bool extend)
+void ChopperDome::setLeftArmExtend(double extend)
 {
-    _leftArmExtend_target = extend ? 1010 : 1000;
+    _leftArmExtend_target = extend;
 }
-void ChopperDome::setRightArmExtend(bool extend)
+void ChopperDome::setRightArmExtend(double extend)
 {
-    _rightArmExtend_target = extend ? 1010 : 1000;
+    _rightArmExtend_target = extend;
 }
 
 void ChopperDome::setLeftArmRotation(double rotation)

@@ -40,8 +40,8 @@ public:
     double current_extendRightArm = 160;
     double current_extendLeftArm = 0;
 
-    void setLeftArmExtend(bool extend);
-    void setRightArmExtend(bool extend);
+    void setLeftArmExtend(double extend);
+    void setRightArmExtend(double extend);
 
     void setLeftArmRotation(double rotation);
     void setRightArmRotation(double rotation);
@@ -74,12 +74,12 @@ private:
     double _rightArmRotate_min = 90;
     double _rightArmRotate_max = 0;
     double _rightArmRotate_doorsafe = 73;
-    double _rightArmRotate_target = 90;
+    double _rightArmRotate_target = 73;
 
     double _leftArmRotate_min = 12;
     double _leftArmRotate_max = 90;
     double _leftArmRotate_doorsafe = 32;
-    double _leftArmRotate_target = 12;
+    double _leftArmRotate_target = 32;
 
     // Extend
     double _leftArmExtend_min = 0;
