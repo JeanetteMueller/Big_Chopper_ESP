@@ -31,14 +31,14 @@
 
 5     PWM board
 4     PWM Board
-0     PWM motor 3
-2     DIR motor 3
+0     
+2     LEDs
 14    PWM motor 1
 12    DIR motor 1
 13    PWM motor 2
 15    DIR motor 2
 3     RX RC Reciever
-1     LEDs
+1     
 
 */
 
@@ -75,18 +75,8 @@ void setup()
 
 // start of loop ///////////////////////////////////////////////////////////////////////
 
-void loop()
+void loopDriving()
 {
-    // searchI2CPorts2();
-    // return;
-
-    wifi->loop();
-
-    loopInput();
-
-    // debugInput();
-
-    // Driving
     if (ibusVar00 != 0 && ibusVar01 != 0)
     {
         chopper->horizontal = ibusVar00;
@@ -97,7 +87,10 @@ void loop()
         chopper->horizontal = 1500;
         chopper->vertical = 1500;
     }
+}
 
+void loopDomeRotationAndPeriscope()
+{
     // Dome & Periscope Rotation
     if (ibusVar02 != 0 && ibusVar03 != 0)
     {
@@ -129,11 +122,10 @@ void loop()
         chopper->dome->setPeriscopeLift(webServer->domePeriscopeLift);
         chopper->dome->setPeriscopeRotation(webServer->domePeriscopeRotate);
     }
+}
 
-    
-    
-
-    // Dome Right Arm
+void loopDomeArmRight()
+{
     if (ibusVar05 != 0)
     {
         if (ibusVar05 >= 1000 && ibusVar05 <= 2000)
@@ -148,8 +140,10 @@ void loop()
         chopper->dome->setRightArmExtend(webServer->domeArmsRightExtend);
         chopper->dome->setRightArmRotation(webServer->domeArmsRightRotate);
     }
+}
 
-    // Dome Left Arm
+void loopDomeArmLeft()
+{
     if (ibusVar04 != 0)
     {
         if (ibusVar04 >= 1000 && ibusVar04 <= 2000)
@@ -164,8 +158,10 @@ void loop()
         chopper->dome->setLeftArmExtend(webServer->domeArmsLeftExtend);
         chopper->dome->setLeftArmRotation(webServer->domeArmsLeftRotate);
     }
+}
 
-    // Dome Shake
+void loopDomeShake()
+{
     if (ibusVar07 != 0)
     {
         if (ibusVar07 == 2000)
@@ -183,28 +179,10 @@ void loop()
     {
         chopper->body->domeShake = webServer->domeShake;
     }
+}
 
-    
-
-    // Body Tools
-    if (ibusVar06 != 0)
-    {
-        if (ibusVar06 >= 1500 && ibusVar06 <= 2000)
-        {
-            chopper->body->bodyArmLeft = true;
-            webServer->bodyArmLeft = true;
-        }
-        else
-        {
-            chopper->body->bodyArmLeft = false;
-            webServer->bodyArmLeft = false;
-        }
-    }
-    else
-    {
-        chopper->body->bodyArmLeft = webServer->bodyArmLeft;
-    }
-
+void loopBodyToolRight()
+{
     if (ibusVar09 != 0)
     {
         if (ibusVar09 >= 1500 && ibusVar09 <= 2000)
@@ -222,28 +200,31 @@ void loop()
     {
         chopper->body->bodyArmRight = webServer->bodyArmRight;
     }
+}
 
-
-    // Lights
-    if (ibusVar02 >= 1650 && ibusVar02 <= 2000)
+void loopBodyToolLeft()
+{
+    if (ibusVar06 != 0)
     {
-        chopper->lights->periscopeIsOn = true;
+        if (ibusVar06 >= 1500 && ibusVar06 <= 2000)
+        {
+            chopper->body->bodyArmLeft = true;
+            webServer->bodyArmLeft = true;
+        }
+        else
+        {
+            chopper->body->bodyArmLeft = false;
+            webServer->bodyArmLeft = false;
+        }
     }
     else
     {
-        chopper->lights->periscopeIsOn = false;
+        chopper->body->bodyArmLeft = webServer->bodyArmLeft;
     }
+}
 
-    if (chopper->body->bodyArmRight)
-    {
-        chopper->lights->currentMood = ChopperLights::LightsMood::terminator;
-    }
-    else
-    {
-        chopper->lights->currentMood = ChopperLights::LightsMood::basic;
-    }
-
-    //Utility Arms
+void loopBodyUtilityArm()
+{
     if (ibusVar08 != 0)
     {
         if (ibusVar08 >= 1500 && ibusVar08 <= 2000)
@@ -282,6 +263,52 @@ void loop()
             chopper->body->utilityArmGripper = false;
         }
     }
+}
+
+void loopLights()
+{
+    if (ibusVar02 >= 1650 && ibusVar02 <= 2000)
+    {
+        chopper->lights->periscopeIsOn = true;
+    }
+    else
+    {
+        chopper->lights->periscopeIsOn = false;
+    }
+
+    if (chopper->body->bodyArmRight)
+    {
+        chopper->lights->currentMood = ChopperLights::LightsMood::terminator;
+    }
+    else
+    {
+        chopper->lights->currentMood = ChopperLights::LightsMood::basic;
+    }
+}
+
+void loop()
+{
+    // searchI2CPorts2();
+    // return;
+
+    wifi->loop();
+
+    loopInput();
+
+    // debugInput();
+
+    loopDriving();
+
+    loopDomeRotationAndPeriscope();
+    loopDomeArmRight();
+    loopDomeArmLeft();
+    loopDomeShake();
+
+    loopBodyToolRight();
+    loopBodyToolLeft();
+    loopBodyUtilityArm();
+
+    loopLights();
 
     // Do Main Loop
     chopper->loop();
