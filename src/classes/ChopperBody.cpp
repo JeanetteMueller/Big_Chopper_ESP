@@ -96,6 +96,9 @@ void ChopperBody::setup()
     pwm_body.setOscillatorFrequency(27000000);
     pwm_body.setPWMFreq(_SERVO_FREQ);
 
+    drive->setupLeftMotor(pwm_body, pwm_body_pin_drive_left_dir, pwm_body_pin_drive_left_pwm);
+    drive->setupRightMotor(pwm_body, pwm_body_pin_drive_right_dir, pwm_body_pin_drive_right_pwm);
+
     domeRotation->setupMotor(pwm_body, pwm_body_pin_dome_rotation_dir, pwm_body_pin_dome_rotation_pwm);
 
     setupDomeShake();
@@ -106,7 +109,9 @@ void ChopperBody::setup()
     setupUtilityGripper();
 }
 void ChopperBody::loop()
-{
+{   
+    drive->updateMotorsWith(horizontal, vertical, 5, 150);
+
     bodyLeftArmTaskManager.loop();
     bodyRightArmTaskManager.loop();
     bodyUtilityArmTaskManager.loop();

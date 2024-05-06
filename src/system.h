@@ -79,13 +79,13 @@ void loopDriving()
 {
     if (ibusVar00 != 0 && ibusVar01 != 0)
     {
-        chopper->horizontal = ibusVar00;
-        chopper->vertical = ibusVar01;
+        chopper->body->horizontal = ibusVar00;
+        chopper->body->vertical = ibusVar01;
     }
     else
     {
-        chopper->horizontal = 1500;
-        chopper->vertical = 1500;
+        chopper->body->horizontal = 1500;
+        chopper->body->vertical = 1500;
     }
 }
 

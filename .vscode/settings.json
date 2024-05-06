@@ -12,6 +12,14 @@
         "array": "cpp",
         "unordered_map": "cpp",
         "vector": "cpp",
-        "stdexcept": "cpp"
+        "stdexcept": "cpp",
+        "__node_handle": "cpp",
+        "bitset": "cpp",
+        "__memory": "cpp",
+        "limits": "cpp",
+        "locale": "cpp",
+        "optional": "cpp",
+        "ratio": "cpp",
+        "tuple": "cpp"
     }
 }
