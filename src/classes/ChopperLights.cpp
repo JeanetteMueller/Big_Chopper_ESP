@@ -109,7 +109,9 @@ void ChopperLights::prepareLights()
     // Eyes
     if (currentMood == terminator)
     {
-        updateLight(ChopperLights::LightType::leftEyeCenter, colorRed);
+        updateLight(ChopperLights::LightType::rightEye, colorRed);
+        updateLight(ChopperLights::LightType::centerEye, colorRed);
+        updateLight(ChopperLights::LightType::leftEye, colorRed);
     }
     else
     {
