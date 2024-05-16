@@ -19,7 +19,8 @@ public:
         centerEyeCenter,
         leftEye,
         leftEyeCenter,
-        periscope
+        periscope,
+        periscopeRainbow
     };
 
     enum LightsMood
@@ -64,6 +65,8 @@ private:
 
     LightsGroup *_periscope;
 
+    uint16_t _step;
+
     byte _pin;
     uint16_t _ledsCount;
     uint16_t _brightness;
@@ -71,6 +74,8 @@ private:
     neoPixelType pixelFormat = NEO_GRB + NEO_KHZ800;
 
     void prepareLights();
+
+    uint32_t rainbowColor(uint16_t pos);
 };
 
 #endif

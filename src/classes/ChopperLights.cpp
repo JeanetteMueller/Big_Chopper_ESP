@@ -4,7 +4,7 @@ ChopperLights::ChopperLights(byte pin, uint16_t brightness, bool debug)
 {
     _debug = debug;
     _pin = pin;
-    _ledsCount = 1 + 1 + 7 + 7 + 7 + 1;
+    _ledsCount = 1 + 1 + 7 + 7 + 7 + 7;
     _brightness = brightness;
 }
 
@@ -24,7 +24,7 @@ void ChopperLights::setup()
     _centerEye = new LightsGroup(_neoPixelLights, 9, 7);
     _leftEye = new LightsGroup(_neoPixelLights, 16, 7);
 
-    _periscope = new LightsGroup(_neoPixelLights, 23, 1);
+    _periscope = new LightsGroup(_neoPixelLights, 23, 7);
 
     offColor = _neoPixelLights->Color(0, 0, 0);
 
@@ -74,6 +74,57 @@ void ChopperLights::updateLight(LightType light, uint32_t color)
     case periscope:
         _periscope->setColor(color);
         break;
+    case periscopeRainbow:
+        if (color != offColor)
+        {
+            if (currentMood == terminator)
+            {
+                _periscope->setColorOnIndex(colorRed, 6);
+            }
+            else
+            {
+                uint16_t raised = 20;
+                _periscope->setColorOnIndex(rainbowColor(_step + raised * 0), 0);
+                _periscope->setColorOnIndex(rainbowColor(_step + raised * 1), 1);
+                _periscope->setColorOnIndex(rainbowColor(_step + raised * 2), 2);
+                _periscope->setColorOnIndex(rainbowColor(_step + raised * 3), 3);
+                _periscope->setColorOnIndex(rainbowColor(_step + raised * 4), 4);
+                _periscope->setColorOnIndex(rainbowColor(_step + raised * 5), 5);
+                _periscope->setColorOnIndex(offColor, 6);
+            }
+        }
+        break;
+    }
+    _step += 1;
+
+    if (_step > 255)
+    {
+        _step = 0;
+    }
+}
+
+// Input a value 0 to 255 to get a color value.
+// The colours are a transition r - g - b - back to r.
+uint32_t ChopperLights::rainbowColor(uint16_t pos)
+{
+    if (pos > 255)
+    {
+        pos = pos - 255;
+    }
+
+    if (pos < 85)
+    {
+        return _neoPixelLights->Color(pos * 3, 255 - pos * 3, 0);
+    }
+    else if (pos < 170)
+    {
+        pos -= 85;
+        return _neoPixelLights->Color(255 - pos * 3, 0, pos * 3);
+    }
+    else
+    {
+        pos -= 170;
+        return _neoPixelLights->Color(0, pos * 3, 255 - pos * 3);
     }
 }
 
@@ -121,7 +172,7 @@ void ChopperLights::prepareLights()
     }
 
     // Periscope
-    updateLight(ChopperLights::LightType::periscope, periscopeIsOn ? periscopeColor : offColor);
+    updateLight(ChopperLights::LightType::periscopeRainbow, periscopeIsOn ? periscopeColor : offColor);
 }
 
 void ChopperLights::loop()
