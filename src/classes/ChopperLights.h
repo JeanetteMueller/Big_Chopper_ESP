@@ -20,6 +20,7 @@ public:
         leftEye,
         leftEyeCenter,
         periscope,
+        periscopeCenter,
         periscopeRainbow
     };
 
@@ -40,9 +41,6 @@ public:
     uint32_t colorRed;
     uint32_t colorGreen;
     uint32_t colorBlue;
-
-    // grün, rot, blau
-    uint32_t periscopeColor;
 
     LightsMood currentMood;
     bool periscopeIsOn;

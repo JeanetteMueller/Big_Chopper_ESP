@@ -38,9 +38,6 @@ void ChopperLights::setup()
     colorRed = _neoPixelLights->Color(255, 0, 0);
     colorGreen = _neoPixelLights->Color(0, 255, 0);
     colorBlue = _neoPixelLights->Color(0, 0, 255);
-
-    // grün, rot, blau
-    periscopeColor = _neoPixelLights->Color(0, 255, 0);
 }
 
 void ChopperLights::updateLight(LightType light, uint32_t color)
@@ -74,25 +71,18 @@ void ChopperLights::updateLight(LightType light, uint32_t color)
     case periscope:
         _periscope->setColor(color);
         break;
+    case periscopeCenter:
+        _periscope->setColorOnIndex(color, 6);
+        break;
     case periscopeRainbow:
-        if (color != offColor)
-        {
-            if (currentMood == terminator)
-            {
-                _periscope->setColorOnIndex(colorRed, 6);
-            }
-            else
-            {
-                uint16_t raised = 20;
-                _periscope->setColorOnIndex(rainbowColor(_step + raised * 0), 0);
-                _periscope->setColorOnIndex(rainbowColor(_step + raised * 1), 1);
-                _periscope->setColorOnIndex(rainbowColor(_step + raised * 2), 2);
-                _periscope->setColorOnIndex(rainbowColor(_step + raised * 3), 3);
-                _periscope->setColorOnIndex(rainbowColor(_step + raised * 4), 4);
-                _periscope->setColorOnIndex(rainbowColor(_step + raised * 5), 5);
-                _periscope->setColorOnIndex(offColor, 6);
-            }
-        }
+        uint16_t raised = 20;
+        _periscope->setColorOnIndex(rainbowColor(_step + raised * 0), 0);
+        _periscope->setColorOnIndex(rainbowColor(_step + raised * 1), 1);
+        _periscope->setColorOnIndex(rainbowColor(_step + raised * 2), 2);
+        _periscope->setColorOnIndex(rainbowColor(_step + raised * 3), 3);
+        _periscope->setColorOnIndex(rainbowColor(_step + raised * 4), 4);
+        _periscope->setColorOnIndex(rainbowColor(_step + raised * 5), 5);
+        _periscope->setColorOnIndex(offColor, 6);
         break;
     }
     _step += 1;
@@ -163,16 +153,23 @@ void ChopperLights::prepareLights()
         updateLight(ChopperLights::LightType::rightEye, colorRed);
         updateLight(ChopperLights::LightType::centerEye, colorRed);
         updateLight(ChopperLights::LightType::leftEye, colorRed);
+
+        if (periscopeIsOn)
+        {
+            updateLight(ChopperLights::LightType::periscopeCenter, colorRed);
+        }
     }
     else
     {
         updateLight(ChopperLights::LightType::rightEye, colorDefaultBlue);
         updateLight(ChopperLights::LightType::centerEye, colorDefaultBlue);
         updateLight(ChopperLights::LightType::leftEye, colorDefaultBlue);
-    }
 
-    // Periscope
-    updateLight(ChopperLights::LightType::periscopeRainbow, periscopeIsOn ? periscopeColor : offColor);
+        if (periscopeIsOn)
+        {
+            updateLight(ChopperLights::LightType::periscopeRainbow, offColor);
+        }
+    }
 }
 
 void ChopperLights::loop()
