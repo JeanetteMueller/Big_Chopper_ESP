@@ -9,57 +9,73 @@
 class ChopperLights
 {
 public:
-  enum LightType
-  {
-    bodyBack,
-    bodyFront,
-    rightEye,
-    rightEyeCenter,
-    centerEye,
-    centerEyeCenter,
-    leftEye,
-    leftEyeCenter,
-    periscope
-  };
+    enum LightType
+    {
+        bodyBack,
+        bodyFront,
+        rightEye,
+        rightEyeCenter,
+        centerEye,
+        centerEyeCenter,
+        leftEye,
+        leftEyeCenter,
+        periscope,
+        periscopeRainbow
+    };
 
-  uint32_t offColor;
+    enum LightsMood
+    {
+        basic,
+        terminator
+    };
 
-  // grün, rot, blau
-  uint32_t frontBodyLightColor;
-  uint32_t backBodyLightColor;
+    uint32_t offColor;
 
-  // rot, grün, blau
-  uint32_t colorDefaultBlue;
-  uint32_t colorRed;
-  uint32_t colorGreen;
-  uint32_t colorBlue;
+    // grün, rot, blau
+    uint32_t frontBodyLightColor;
+    uint32_t backBodyLightColor;
 
-  // grün, rot, blau
-  uint32_t periscopeColor;
+    // rot, grün, blau
+    uint32_t colorDefaultBlue;
+    uint32_t colorRed;
+    uint32_t colorGreen;
+    uint32_t colorBlue;
 
-  ChopperLights(byte pin, uint16_t brightness);
-  void setupLights();
-  void loopLights();
+    // grün, rot, blau
+    uint32_t periscopeColor;
 
-  void resetAllLights();
+    LightsMood currentMood;
+    bool periscopeIsOn;
 
-  void updateLight(LightType light, uint32_t color);
+    ChopperLights(byte pin, uint16_t brightness, bool debug);
+
+    void setup();
+    void loop();
+    void resetAllLights();
+    void updateLight(LightType light, uint32_t color);
 
 private:
-  LightsGroup *_bodyBack;
-  LightsGroup *_bodyFront;
+    bool _debug;
+    LightsGroup *_bodyBack;
+    LightsGroup *_bodyFront;
 
-  LightsGroup *_rightEye;
-  LightsGroup *_centerEye;
-  LightsGroup *_leftEye;
+    LightsGroup *_rightEye;
+    LightsGroup *_centerEye;
+    LightsGroup *_leftEye;
 
-  LightsGroup *_periscope;
+    LightsGroup *_periscope;
 
-  byte _pin;
-  uint16_t _ledsCount;
-  uint16_t _brightness;
-  Adafruit_NeoPixel *_neoPixelLights;
-  neoPixelType pixelFormat = NEO_GRB + NEO_KHZ800;
+    uint16_t _step;
+
+    byte _pin;
+    uint16_t _ledsCount;
+    uint16_t _brightness;
+    Adafruit_NeoPixel *_neoPixelLights;
+    neoPixelType pixelFormat = NEO_GRB + NEO_KHZ800;
+
+    void prepareLights();
+
+    uint32_t rainbowColor(uint16_t pos);
 };
 
 #endif

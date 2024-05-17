@@ -29,34 +29,43 @@ public:
         settingsPage
     };
 
-    enum Content
-    {
-        stylesContent,
-        javascriptContent
-    };
-
-    int16_t joy1_x = 0;
-    int16_t joy1_y = 0;
-
-    int16_t domeRotate = 1500;
+    int16_t drive_x = 0;
+    int16_t drive_y = 0;
 
     bool bodyArmLeft = false;
     bool bodyArmRight = false;
+    bool utilityArm = false;
+    bool utilityArmGripper = false;
+
+    bool domeShake = false;
+    int16_t domeRotate = 1500;
+    double domeArmsLeftExtend = 1000;
+    double domeArmsRightExtend = 1000;
+    double domeArmsLeftRotate = 1000;
+    double domeArmsRightRotate = 1000;
+
+    double domePeriscopeLift = 0;
+    double domePeriscopeRotate = 0;
+
 
     WebServer(uint32_t port);
     void start();
 
+    
+
 private:
     AsyncWebServer *_server;
+    String html;
 
-    String getBaseHtml(String body);
-    String getContent(Content content);
+    void getBaseHtml(const String & body, String &target);
     String getPage(Page page, AsyncWebServerRequest *request);
 
     void apiPostAction(AsyncWebServerRequest *request, uint8_t* data, size_t len, size_t index, size_t total);
+    void apiGetAction(AsyncWebServerRequest *request, uint8_t *data, size_t len, size_t index, size_t total);
     void postAction(AsyncWebServerRequest *request);
 
     void notFound(AsyncWebServerRequest *request);
+    std::string random_string(size_t length);
 };
 
 #endif

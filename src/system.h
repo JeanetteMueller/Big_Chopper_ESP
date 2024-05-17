@@ -1,40 +1,27 @@
-#include <Arduino.h>
-#ifdef __AVR__
-#include <avr/power.h>
-#endif
+// #include <Arduino.h>
+// #ifdef __AVR__
+// #include <avr/power.h>
+// #endif
 
-#include <Wire.h>
-#include "searchI2cPorts.h"
+// #include <Wire.h>
+// #include "searchI2cPorts.h"
 
-#ifdef ESP32
-#include <WiFi.h>
-#include <AsyncTCP.h>
-#elif defined(ESP8266)
+// #ifdef ESP32
+// #include <WiFi.h>
+// #include <AsyncTCP.h>
+// #elif defined(ESP8266)
 #include <ESP8266WiFi.h>
-#endif
+// #endif
 
 #define SERIAL_PORT_SPEED 115200 // Define the port output serial communication speed
 
-#include <IBusBM.h>
-#include <Adafruit_PWMServoDriver.h>
-
-#include "SoftwareSerial.h"
-#include <DFPlayerMini_Fast.h>
+// #include "SoftwareSerial.h"
+// #include <DFPlayerMini_Fast.h>
 
 #include "definitions.h"
 
-#include "Wifi.h"
-
-#include "functions.h"
 #include "debug.h"
 #include "input.h"
-
-#include "drive.h"
-#include "domeRotation.h"
-#include "domeShake.h"
-#include "domePeriscope.h"
-#include "bodyTools.h"
-#include "domeTools.h"
 
 // #include "test.h"
 
@@ -44,148 +31,287 @@
 
 5     PWM board
 4     PWM Board
-0     PWM motor 3
-2     DIR motor 3
+0     
+2     LEDs
 14    PWM motor 1
 12    DIR motor 1
 13    PWM motor 2
 15    DIR motor 2
 3     RX RC Reciever
-1     LEDs
+1     
 
 */
 
 /////////////////////////////////// SETUP ////////////////////////////////////////////////////
 void setup()
 {
-  Serial.begin(SERIAL_PORT_SPEED); // Used only for debugging on arduino serial monitor
-  Serial.println(F("Big Droid Chopper! v2.1"));
+    Serial.begin(SERIAL_PORT_SPEED); // Used only for debugging on arduino serial monitor
+    Serial.println(F("Big Droid Chopper! v2.1"));
 
-  pwm_body.begin();
-  pwm_body.setOscillatorFrequency(27000000);
-  pwm_body.setPWMFreq(SERVO_FREQ);
+    // Wifi Settings
+    wifi->host = IPAddress(192, 168, 10, 1);
+    wifi->subnetMask = IPAddress(255, 255, 255, 0);
+    wifi->currentMode = JxWifiManager::WifiModeNetwork;
 
-  pwm_head.begin();
-  pwm_head.setOscillatorFrequency(27000000);
-  pwm_head.setPWMFreq(SERVO_FREQ);
+    // Hotspot
+    wifi->hotspot_Ssid = "ChopperWifiControl";
+    wifi->hotspot_Password = "<YOUR WIFI PASSWORD>";
 
-  setupInput();
+    // use Local Wifi
+    wifi->network_Ssid = "Yavin4"; // <- change if needed
+    wifi->network_Password = "29833170985536833475";
 
-  setupWifi();
-  webServer->start();
+    setupInput();
 
-  drive->setupLeftMotor(PWM_DIR, 14, 12);
-  drive->setupRightMotor(PWM_DIR, 13, 15);
+    chopper->setup();
 
-  domeRotation->setupMotor(PWM_DIR, 0, 2);
+    wifi->setup();
+    webServer->start();
 
-  setupDomeShake();
-  setupBodyTools();
-  if (!debug)
-  {
-    lights->setupLights();
-  }
-  setupDomeTools();
+    // setupAudio();
 
-  // setupAudio();
-
-  // setupTest();
+    // setupTest();
 }
 
 // start of loop ///////////////////////////////////////////////////////////////////////
 
-void prepareLights()
+void loopDriving()
 {
-  lights->resetAllLights();
-  lights->updateLight(ChopperLights::LightType::bodyBack, lights->backBodyLightColor);
-  lights->updateLight(ChopperLights::LightType::bodyFront, lights->frontBodyLightColor);
+    if (ibusVar00 != 0 && ibusVar01 != 0)
+    {
+        chopper->body->horizontal = ibusVar00;
+        chopper->body->vertical = ibusVar01;
+    }
+    else
+    {
+        chopper->body->horizontal = 1500;
+        chopper->body->vertical = 1500;
+    }
+}
 
-  // Eyes
-  if (ibusVar09 == 2000)
-  {
-    lights->updateLight(ChopperLights::LightType::leftEyeCenter, lights->colorRed);
-  }
-  else
-  {
-    lights->updateLight(ChopperLights::LightType::rightEye, lights->colorDefaultBlue);
-    lights->updateLight(ChopperLights::LightType::centerEye, lights->colorDefaultBlue);
-    lights->updateLight(ChopperLights::LightType::leftEye, lights->colorDefaultBlue);
-  }
+void loopDomeRotationAndPeriscope()
+{
+    // Dome & Periscope Rotation
+    if (ibusVar02 != 0 && ibusVar03 != 0)
+    {
+        if (ibusVar02 >= 1500 && ibusVar02 <= 2000)
+        {
+            chopper->body->setDomeRotation(1500);
+            webServer->domeRotate = 1500;
 
-  // Periscope
-  if (ibusVar02 >= 1650 && ibusVar02 <= 2000)
-  {
-    lights->updateLight(ChopperLights::LightType::periscope, lights->periscopeColor);
-  }
-  else
-  {
-    lights->updateLight(ChopperLights::LightType::periscope, lights->offColor);
-  }
+            int16_t liftPeriscope = map(ibusVar02, 1500, 2000, 0, 255);
+            chopper->dome->setPeriscopeLift(liftPeriscope);
+            webServer->domePeriscopeLift = liftPeriscope;
+
+            int16_t rotationPeriscope = map(ibusVar03, 1000, 2000, -127, 127);
+            chopper->dome->setPeriscopeRotation(rotationPeriscope);
+            webServer->domePeriscopeRotate = rotationPeriscope;
+        }
+        else
+        {
+            chopper->dome->setPeriscopeLift(0);
+            chopper->dome->setPeriscopeRotation(0);
+
+            chopper->body->setDomeRotation(ibusVar03);
+            webServer->domeRotate = ibusVar03;
+        }
+    }
+    else
+    {
+        chopper->body->setDomeRotation(webServer->domeRotate);
+        chopper->dome->setPeriscopeLift(webServer->domePeriscopeLift);
+        chopper->dome->setPeriscopeRotation(webServer->domePeriscopeRotate);
+    }
+}
+
+void loopDomeArmRight()
+{
+    if (ibusVar05 != 0)
+    {
+        if (ibusVar05 >= 1000 && ibusVar05 <= 2000)
+        {
+            chopper->dome->setRightArmExtend(ibusVar05);
+            chopper->dome->setRightArmRotation(ibusVar05);
+            webServer->domeArmsRightRotate = ibusVar05;
+        }
+    }
+    else
+    {
+        chopper->dome->setRightArmExtend(webServer->domeArmsRightExtend);
+        chopper->dome->setRightArmRotation(webServer->domeArmsRightRotate);
+    }
+}
+
+void loopDomeArmLeft()
+{
+    if (ibusVar04 != 0)
+    {
+        if (ibusVar04 >= 1000 && ibusVar04 <= 2000)
+        {
+            chopper->dome->setLeftArmExtend(ibusVar04);
+            chopper->dome->setLeftArmRotation(ibusVar04);
+            webServer->domeArmsLeftRotate = ibusVar04;
+        }
+    }
+    else
+    {
+        chopper->dome->setLeftArmExtend(webServer->domeArmsLeftExtend);
+        chopper->dome->setLeftArmRotation(webServer->domeArmsLeftRotate);
+    }
+}
+
+void loopDomeShake()
+{
+    if (ibusVar07 != 0)
+    {
+        if (ibusVar07 == 2000)
+        {
+            chopper->body->domeShake = true;
+            webServer->domeShake = true;
+        }
+        else
+        {
+            chopper->body->domeShake = false;
+            webServer->domeShake = false;
+        }
+    }
+    else
+    {
+        chopper->body->domeShake = webServer->domeShake;
+    }
+}
+
+void loopBodyToolRight()
+{
+    if (ibusVar09 != 0)
+    {
+        if (ibusVar09 >= 1500 && ibusVar09 <= 2000)
+        {
+            chopper->body->bodyArmRight = true;
+            webServer->bodyArmRight = true;
+        }
+        else
+        {
+            chopper->body->bodyArmRight = false;
+            webServer->bodyArmRight = false;
+        }
+    }
+    else
+    {
+        chopper->body->bodyArmRight = webServer->bodyArmRight;
+    }
+}
+
+void loopBodyToolLeft()
+{
+    if (ibusVar06 != 0)
+    {
+        if (ibusVar06 >= 1500 && ibusVar06 <= 2000)
+        {
+            chopper->body->bodyArmLeft = true;
+            webServer->bodyArmLeft = true;
+        }
+        else
+        {
+            chopper->body->bodyArmLeft = false;
+            webServer->bodyArmLeft = false;
+        }
+    }
+    else
+    {
+        chopper->body->bodyArmLeft = webServer->bodyArmLeft;
+    }
+}
+
+void loopBodyUtilityArm()
+{
+    if (ibusVar08 != 0)
+    {
+        if (ibusVar08 >= 1500 && ibusVar08 <= 2000)
+        {
+            chopper->body->utilityArm = true;
+            webServer->utilityArm = true;
+            if (ibusVar08 == 2000)
+            {
+                chopper->body->utilityArmGripper = true;
+                webServer->utilityArmGripper = true;
+            }
+            else
+            {
+                chopper->body->utilityArmGripper = false;
+                webServer->utilityArmGripper = false;
+            }
+        }
+        else
+        {
+            chopper->body->utilityArmGripper = false;
+            webServer->utilityArmGripper = false;
+
+            chopper->body->utilityArm = false;
+            webServer->utilityArm = false;
+        }
+    }
+    else
+    {
+        chopper->body->utilityArm = webServer->utilityArm;
+        if (webServer->utilityArmGripper && webServer->utilityArm)
+        {
+            chopper->body->utilityArmGripper = true;
+        }
+        else
+        {
+            chopper->body->utilityArmGripper = false;
+        }
+    }
+}
+
+void loopLights()
+{
+    if (ibusVar02 >= 1650 && ibusVar02 <= 2000)
+    {
+        chopper->lights->periscopeIsOn = true;
+    }
+    else
+    {
+        chopper->lights->periscopeIsOn = false;
+    }
+
+    if (chopper->body->bodyArmRight)
+    {
+        chopper->lights->currentMood = ChopperLights::LightsMood::terminator;
+    }
+    else
+    {
+        chopper->lights->currentMood = ChopperLights::LightsMood::basic;
+    }
 }
 
 void loop()
 {
-  // searchI2CPorts2();
-  // return;
+    // searchI2CPorts2();
+    // return;
 
-  currentMillis = millis();
-  if (currentMillis < previousMillis_005)
-  {
-    previousMillis_005 = 0;
-  }
-  if (currentMillis < previousMillis_020)
-  {
-    previousMillis_020 = 0;
-  }
-  if (currentMillis < previousMillis_100)
-  {
-    previousMillis_100 = 0;
-  }
-  if (currentMillis < previousMillis_200)
-  {
-    previousMillis_200 = 0;
-  }
+    wifi->loop();
 
-  loopWifi();
+    loopInput();
 
-  loopInput();
+    // debugInput();
 
-  // debugInput();
+    loopDriving();
 
-  if (currentMillis - previousMillis_005 >= 5)
-  {
-    previousMillis_005 = currentMillis;
+    loopDomeRotationAndPeriscope();
+    loopDomeArmRight();
+    loopDomeArmLeft();
+    loopDomeShake();
 
-    loopDrive();
-    loopDomeRotation();
-  }
+    loopBodyToolRight();
+    loopBodyToolLeft();
+    loopBodyUtilityArm();
 
-  if (currentMillis - previousMillis_020 >= 20)
-  {
-    previousMillis_020 = currentMillis;
+    loopLights();
 
-    bodyLeftArmTaskManager.loop();
-    bodyRightArmTaskManager.loop();
-    bodyUtilityArmTaskManager.loop();
-    bodyUtilityArmGripperTaskManager.loop();
-    domeRightArmTaskManager.loop();
-    domeLeftArmTaskManager.loop();
-    loopDomeArms();
-    domeShakeTaskManager.loop();
-
-    loopBodyTools();
-  }
-
-  if (currentMillis - previousMillis_100 >= 100)
-  {
-    previousMillis_100 = currentMillis;
-
-    if (!debug)
-    {
-      prepareLights();
-      lights->loopLights();
-    }
-    loopDomePeriscope();
+    // Do Main Loop
+    chopper->loop();
 
     // loopAudio();
     // Serial.print( stack_unused() ); Serial.print(F(" -> ")); Serial.println( stack_free() );
@@ -195,7 +321,6 @@ void loop()
     // Serial.print("globalBool is: ");
     // // bool globalBoolValue = *globalBool;
     // Serial.println(globalBool == true ? "-----------------true" : "-----------------false");
-  }
 }
 
 // end of loop ///////////////////////////////////////////////////////////////////////////////////////////

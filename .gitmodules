@@ -1,0 +1,12 @@
+[submodule "src/submodules/JxWifiManager"]
+	path = src/submodules/JxWifiManager
+	url = https://github.com/JeanetteMueller/JxWifiManager
+[submodule "src/submodules/JxTaskManager"]
+	path = src/submodules/JxTaskManager
+	url = https://github.com/JeanetteMueller/JxTaskManager
+[submodule "src/submodules/JxTankDriver"]
+	path = src/submodules/JxTankDriver
+	url = https://github.com/JeanetteMueller/JxTankDriver
+[submodule "src/submodules/JxDomeRotation"]
+	path = src/submodules/JxDomeRotation
+	url = https://github.com/JeanetteMueller/JxDomeRotation

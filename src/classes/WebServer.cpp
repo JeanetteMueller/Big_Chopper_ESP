@@ -11,20 +11,36 @@ void WebServer::start()
         "/api/post.json", HTTP_POST, [&](AsyncWebServerRequest *request) {}, nullptr, [&](AsyncWebServerRequest *request, uint8_t *data, size_t len, size_t index, size_t total)
         { apiPostAction(request, data, len, index, total); });
 
-    _server->on("/", HTTP_POST, [&](AsyncWebServerRequest *request)
-                { postAction(request); });
+    _server->on(
+        "/api/get.json", HTTP_POST, [&](AsyncWebServerRequest *request) {}, nullptr, [&](AsyncWebServerRequest *request, uint8_t *data, size_t len, size_t index, size_t total)
+        { apiGetAction(request, data, len, index, total); });
 
-    _server->on("/", HTTP_GET, [&](AsyncWebServerRequest *request)
-                { request->send(200, "text/html", getPage(indexPage, request)); });
+    // _server->on("/", HTTP_POST, [&](AsyncWebServerRequest *request)
+    //             { postAction(request); });
 
     _server->on("/styles.css", HTTP_GET, [&](AsyncWebServerRequest *request)
-                { request->send(200, "text/css", getContent(stylesContent)); });
+                { 
+                    AsyncResponseStream *response = request->beginResponseStream("text/css");
+                    response->print(styles);
+                    request->send(response); });
 
     _server->on("/javascript.js", HTTP_GET, [&](AsyncWebServerRequest *request)
-                { request->send(200, "text/javascript", getContent(javascriptContent)); });
+                {
+                    AsyncResponseStream *response = request->beginResponseStream("text/javascript");
+                    response->print(javascript);
 
+                    request->send(response); });
+
+    _server->on("/", HTTP_GET, [&](AsyncWebServerRequest *request)
+                {
+                    AsyncResponseStream *response = request->beginResponseStream("text/html");
+                    response->print(getPage(indexPage, request));
+                    request->send(response); });
     _server->on("/index.html", HTTP_GET, [&](AsyncWebServerRequest *request)
-                { request->send(200, "text/html", getPage(indexPage, request)); });
+                {
+                    AsyncResponseStream *response = request->beginResponseStream("text/html");
+                    response->print(getPage(indexPage, request));
+                    request->send(response); });
 
     _server->on("/settings.html", HTTP_GET, [&](AsyncWebServerRequest *request)
                 { request->send(200, "text/html", getPage(settingsPage, request)); });
@@ -37,27 +53,94 @@ void WebServer::start()
 
 void WebServer::apiPostAction(AsyncWebServerRequest *request, uint8_t *data, size_t len, size_t index, size_t total)
 {
-    Serial.println("apiPostAction!");
-
     JsonDocument json;
     deserializeJson(json, data, len);
 
-    joy1_x = json["joy1"]["x"];
-    joy1_y = json["joy1"]["y"];
-    Serial.print("post: joy1: ");
-    Serial.print(joy1_x);
-    Serial.print(" - ");
-    Serial.println(joy1_y);
+    if (!json["body"].isNull())
+    {
+        bodyArmLeft = json["body"]["arms"]["left"];
+        bodyArmRight = json["body"]["arms"]["right"];
+        utilityArm = json["body"]["utility"]["arm"];
+        utilityArmGripper = json["body"]["utility"]["gripper"];
 
-    domeRotate = json["dome"]["rotate"];
-    Serial.print("domeRotate: ");
-    Serial.println(domeRotate);
+        Serial.print("body: ");
 
-    bodyArmLeft = json["body"]["arms"]["left"];
-    bodyArmRight = json["body"]["arms"]["right"];
+        Serial.print("tools: left ");
+        Serial.print(bodyArmLeft);
+        Serial.print(" right: ");
+        Serial.print(bodyArmRight);
+
+        Serial.print(" | arm: ");
+        Serial.print(utilityArm);
+        Serial.print(" gripper: ");
+        Serial.print(utilityArmGripper);
+    }
+
+    if (!json["dome"].isNull())
+    {
+        domeShake = json["dome"]["shake"];
+        domeRotate = json["dome"]["rotate"];
+        domeArmsLeftExtend = json["dome"]["arms"]["left"]["extend"];
+        domeArmsRightExtend = json["dome"]["arms"]["right"]["extend"];
+        domeArmsLeftRotate = json["dome"]["arms"]["left"]["rotate"];
+        domeArmsRightRotate = json["dome"]["arms"]["right"]["rotate"];
+        domePeriscopeLift = json["dome"]["periscope"]["lift"];
+        domePeriscopeRotate = json["dome"]["periscope"]["rotate"];
+
+        Serial.print("dome: ");
+
+        Serial.print("shake: ");
+        Serial.print(domeShake);
+
+        Serial.print(" rotate: ");
+        Serial.print(domeRotate);
+
+        Serial.print(" | leftArm extend: ");
+        Serial.print(domeArmsLeftExtend);
+        Serial.print(" rotate: ");
+        Serial.print(domeArmsLeftRotate);
+
+        Serial.print(" | rightArm extend: ");
+        Serial.print(domeArmsRightExtend);
+        Serial.print(" rotate: ");
+        Serial.print(domeArmsRightRotate);
+
+        Serial.print(" | Periscope lift: ");
+        Serial.print(domePeriscopeLift);
+        Serial.print(" rotate: ");
+        Serial.print(domePeriscopeRotate);
+        
+    }
+    Serial.println("");
+    Serial.println("---");
 
     String result;
     serializeJson(json, result);
+
+    request->send(200, "application/json", result);
+}
+
+void WebServer::apiGetAction(AsyncWebServerRequest *request, uint8_t *data, size_t len, size_t index, size_t total)
+{
+    JsonDocument r = JsonDocument();
+
+    r["body"]["arms"]["left"] = bodyArmLeft;
+    r["body"]["arms"]["right"] = bodyArmRight;
+    r["body"]["utility"]["arm"] = utilityArm;
+    r["body"]["utility"]["gripper"] = utilityArmGripper;
+
+    r["dome"]["shake"] = domeShake;
+    r["dome"]["rotate"] = domeRotate;
+    r["dome"]["arms"]["left"]["extend"] = domeArmsLeftExtend;
+    r["dome"]["arms"]["right"]["extend"] = domeArmsRightExtend;
+    r["dome"]["arms"]["left"]["rotate"] = domeArmsLeftRotate;
+    r["dome"]["arms"]["right"]["rotate"] = domeArmsRightRotate;
+
+    r["dome"]["periscope"]["lift"] = domePeriscopeLift;
+    r["dome"]["periscope"]["rotate"] = domePeriscopeRotate;
+
+    String result;
+    serializeJson(r, result);
 
     request->send(200, "application/json", result);
 }
@@ -93,23 +176,13 @@ String WebServer::getPage(Page page, AsyncWebServerRequest *request)
     switch (page)
     {
     case indexPage:
-        return getBaseHtml(indexHtml);
+        getBaseHtml(indexHtml, html);
+        break;
     case settingsPage:
-        return getBaseHtml(settingsHtml);
+        getBaseHtml(settingsHtml, html);
+        break;
     }
-    return "";
-}
-
-String WebServer::getContent(Content content)
-{
-    switch (content)
-    {
-    case stylesContent:
-        return styles;
-    case javascriptContent:
-        return javascript;
-    }
-    return "";
+    return html;
 }
 
 void WebServer::notFound(AsyncWebServerRequest *request)
@@ -117,9 +190,25 @@ void WebServer::notFound(AsyncWebServerRequest *request)
     request->send(404, "text/plain", "Not found");
 }
 
-String WebServer::getBaseHtml(String body)
+void WebServer::getBaseHtml(const String &body, String &target)
 {
-    String html = baseHtml;
-    html.replace("###BODY###", body);
-    return html;
+    target = baseHtml;
+    target.replace("###BODY###", body);
+    target.replace("###RANDOM###", random_string(10).c_str());
+}
+
+std::string WebServer::random_string(size_t length)
+{
+    auto randchar = []() -> char
+    {
+        const char charset[] =
+            "0123456789"
+            "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+            "abcdefghijklmnopqrstuvwxyz";
+        const size_t max_index = (sizeof(charset) - 1);
+        return charset[rand() % max_index];
+    };
+    std::string str(length, 0);
+    std::generate_n(str.begin(), length, randchar);
+    return str;
 }
