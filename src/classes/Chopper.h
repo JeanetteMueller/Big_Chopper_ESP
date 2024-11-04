@@ -1,8 +1,6 @@
 #ifndef Chopper_h
 #define Chopper_h
 
-#include <Adafruit_PWMServoDriver.h>
-
 #include "ChopperLights.h"
 #include "ChopperBody.h"
 #include "ChopperDome.h"

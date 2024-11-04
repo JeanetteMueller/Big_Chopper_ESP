@@ -85,7 +85,7 @@ private:
     void setupUtilityArm();
 
     double default_utility_gripper = 120;
-    double max_utility_gripper = 65;
+    double max_utility_gripper = 30;
     JxTaskManager bodyUtilityArmGripperTaskManager = JxTaskManager();
     void setupUtilityGripper();
 
