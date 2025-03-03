@@ -63,11 +63,11 @@ private:
 
     LightsGroup *_periscope;
 
-    uint16_t _step;
+    uint16_t _step = 0;
 
     byte _pin;
-    uint16_t _ledsCount;
-    uint16_t _brightness;
+    uint16_t _ledsCount = 0;
+    uint16_t _brightness = 100;
     Adafruit_NeoPixel *_neoPixelLights;
     neoPixelType pixelFormat = NEO_GRB + NEO_KHZ800;
 

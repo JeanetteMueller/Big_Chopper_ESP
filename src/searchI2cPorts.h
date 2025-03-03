@@ -1,4 +1,4 @@
-void searchI2CPorts()
+bool searchI2CPorts()
 {
 	byte error, address; // variable for error and I2C address
 	int nDevices;
@@ -39,16 +39,19 @@ void searchI2CPorts()
 	if (nDevices == 0)
 	{
 		Serial.println(F("No I2C devices found"));
+		delay(3000);
+		return false;
 	}
 	else
 	{
 		Serial.println(F("done"));
+		return true;
 	}
 
-	delay(3000); // wait 3 seconds for the next I2C scan
+	// wait 3 seconds for the next I2C scan
 }
 
-void searchI2CPorts2()
+bool searchI2CPorts2()
 {
 
 	//   while (!Serial) // Waiting for serial connection
@@ -72,12 +75,21 @@ void searchI2CPorts2()
 			Serial.println(")");
 			count++;
 			delay(1); // maybe unneeded?
-		}			  // end of good response
-	}				  // end of for loop
+		} // end of good response
+	} // end of for loop
 	Serial.println("Done.");
-	Serial.print("Found ");
-	Serial.print(count, DEC);
-	Serial.println(" device(s).");
 
-	delay(3000); // wait 3 seconds for the next I2C scan
+	if (count > 0)
+	{
+		Serial.print("Found ");
+		Serial.print(count, DEC);
+		Serial.println(" device(s).");
+		return true;
+	}
+	else
+	{
+		Serial.println(F("No I2C devices found"));
+		delay(3000); // wait 3 seconds for the next I2C scan
+		return false;
+	}
 }

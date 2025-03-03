@@ -1,15 +1,15 @@
 
 bool debug = false;
 
-#include "submodules/JxWifiManager/JxWifiManager.h"
-JxWifiManager *wifi = new JxWifiManager();
+#include <Adafruit_PWMServoDriver.h>
+Adafruit_PWMServoDriver *pwm_body = new Adafruit_PWMServoDriver(0x40);
+Adafruit_PWMServoDriver *pwm_dome = new Adafruit_PWMServoDriver(0x60);
 
-#include "classes/WebServer.h"
-#define ServerPort 80
-WebServer *webServer = new WebServer(ServerPort);
+#include "classes/DYPlayerESP32SoftwareSerial.h"
+DY::PlayerEsp32SoftwareSerial player(UART_NUM_2, 26, 25);
 
 #include "classes/Chopper.h"
-Chopper *chopper = new Chopper(debug);
+Chopper *chopper = new Chopper(pwm_body, pwm_dome, &player,  debug);
 
 // RC values coming from the iBUS RC-Reciever
 #include <IBusBM.h>
@@ -35,11 +35,3 @@ uint16_t ibusVar09 = 0;
 #define RC_SWITCH_LEFT_IN (byte)7
 #define RC_SWITCH_RIGHT_IN (byte)8
 #define RC_SWITCH_RIGHT_OUT (byte)9
-
-
-// Audio
-// SoftwareSerial mySerial(6,5); // RX, TX
-// DFPlayerMini_Fast player;
-// bool directStart = true;
-// uint16_t audioPause = 2000;
-// uint16_t audioItemCount = 0;

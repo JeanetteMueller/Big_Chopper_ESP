@@ -1,14 +1,11 @@
 
-
 void setupInput()
 {
-
-  IBus->begin(Serial, IBUSBM_NOTIMER);
+  IBus->begin(Serial2, IBUSBM_NOTIMER);
 }
 
 void loopInput()
 {
-
   IBus->loop();
 
   if (IBus->cnt_rec > 0)

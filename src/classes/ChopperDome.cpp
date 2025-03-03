@@ -1,155 +1,113 @@
 
 #include "ChopperDome.h"
 
-ChopperDome::ChopperDome(bool debug)
+ChopperDome::ChopperDome(Adafruit_PWMServoDriver *pwm, bool debug)
 {
-    _debug = debug;
+  _debug = debug;
+
+  _pwm_dome = pwm;
+
+  _domeRightArmTaskManager = new JxTaskManager("domeRightArmTaskManager", _debug);
+  _domeLeftArmTaskManager = new JxTaskManager("domeLeftArmTaskManager", _debug);
 }
 
 void ChopperDome::setupRightArmTools()
 {
-    rotateServoToDegree(pwm_head_pin_arms_right_door, _rightArmDoor_min);
-    rotateServoToDegree(pwm_head_pin_arms_right_rotate, _rightArmRotate_doorsafe);
-    rotateServoToDegree(pwm_head_pin_arms_right_extruder, _rightArmExtruder_min);
-    rotateServoToDegree(pwm_head_pin_arms_right_extend, _rightArmExtend_min);
+  rotateServoToDegree(pwm_head_pin_arms_right_door, _rightArmDoor_min);
+  rotateServoToDegree(pwm_head_pin_arms_right_extruder, _rightArmExtruder_min);
 
-    double extendMin = 1010;
-    double extendMax = 2000;
-    double extendClosed = 1000;
+  double extendMin = 1010;
+  double extendMax = 2000;
+  double extendClosed = 1000;
 
-    // check if swith is active
-    domeRightArmTaskManager.addTask(new DoubleValueTask(&_rightArmExtend_target, extendMin, extendMax));
-    // open door
-    domeRightArmTaskManager.addTask(new MoveServoTask(pwm_head, pwm_head_pin_arms_right_door, _rightArmDoor_min, _rightArmDoor_max, 300, 100));
-    // bring arm out
-    domeRightArmTaskManager.addTask(new MoveServoTask(pwm_head, pwm_head_pin_arms_right_extruder, _rightArmExtruder_min, _rightArmExtruder_max, 800, 500));
-    domeRightArmTaskManager.addTask(new ChangeBoolTask(&rightArmIsReady, true));
-    // wait here to bring right arm in and close doors
-    // check if arm is vertical
-    domeRightArmTaskManager.addTask(new DoubleValueTask(&_rightArmExtend_target, extendClosed));
-    domeRightArmTaskManager.addTask(new ChangeBoolTask(&rightArmIsReady, false));
-    // bring arm in
-    domeRightArmTaskManager.addTask(new MoveServoTask(pwm_head, pwm_head_pin_arms_right_extruder, _rightArmExtruder_max, _rightArmExtruder_min, 800, 200));
-    // close door
-    domeRightArmTaskManager.addTask(new MoveServoTask(pwm_head, pwm_head_pin_arms_right_door, _rightArmDoor_max, _rightArmDoor_min, 300, 200));
+  // check if swith is active
+  _domeRightArmTaskManager->addTask(new DoubleValueTask(&_rightArmExtend_target, extendMin, extendMax));
+  // open door
+  _domeRightArmTaskManager->addTask(new MoveServoTask(_pwm_dome, pwm_head_pin_arms_right_door, _rightArmDoor_min, _rightArmDoor_max, 300, 100));
+  // bring arm out
+  _domeRightArmTaskManager->addTask(new MoveServoTask(_pwm_dome, pwm_head_pin_arms_right_extruder, _rightArmExtruder_min, _rightArmExtruder_max, 800, 500));
+  _domeRightArmTaskManager->addTask(new ChangeBoolTask(&rightArmIsReady, true));
+  // wait here to bring right arm in and close doors
+  // check if arm is vertical
+  _domeRightArmTaskManager->addTask(new DoubleValueTask(&_rightArmExtend_target, extendClosed));
+  _domeRightArmTaskManager->addTask(new ChangeBoolTask(&rightArmIsReady, false));
+  // bring arm in
+  _domeRightArmTaskManager->addTask(new MoveServoTask(_pwm_dome, pwm_head_pin_arms_right_extruder, _rightArmExtruder_max, _rightArmExtruder_min, 800, 200));
+  // close door
+  _domeRightArmTaskManager->addTask(new MoveServoTask(_pwm_dome, pwm_head_pin_arms_right_door, _rightArmDoor_max, _rightArmDoor_min, 300, 200));
 }
 
 void ChopperDome::setupLeftArmTools()
 {
-    rotateServoToDegree(pwm_head_pin_arms_left_door, _leftArmDoor_min);
-    rotateServoToDegree(pwm_head_pin_arms_left_rotate, _leftArmRotate_doorsafe);
-    rotateServoToDegree(pwm_head_pin_arms_left_extruder, _leftArmExtruder_min);
-    rotateServoToDegree(pwm_head_pin_arms_left_extend, _leftArmExtend_min);
+  rotateServoToDegree(pwm_head_pin_arms_left_door, _leftArmDoor_min);
+  rotateServoToDegree(pwm_head_pin_arms_left_extruder, _leftArmExtruder_min);
 
-    double extendMin = 1010;
-    double extendMax = 2000;
-    double extendClosed = 1000;
+  double extendMin = 1010;
+  double extendMax = 2000;
+  double extendClosed = 1000;
 
-    // check if swith is active
-    domeLeftArmTaskManager.addTask(new DoubleValueTask(&_leftArmExtend_target, extendMin, extendMax));
-    // open door
-    domeLeftArmTaskManager.addTask(new MoveServoTask(pwm_head, pwm_head_pin_arms_left_door, _leftArmDoor_min, _leftArmDoor_max, 300, 100));
-    // bring arm out
-    domeLeftArmTaskManager.addTask(new MoveServoTask(pwm_head, pwm_head_pin_arms_left_extruder, _leftArmExtruder_min, _leftArmExtruder_max, 800, 500));
-    // stretch arm to current position
-    domeLeftArmTaskManager.addTask(new ChangeBoolTask(&leftArmIsReady, true));
-    // wait here to bring left arm in and close doors
-    // check if arm is vertical
-    domeLeftArmTaskManager.addTask(new DoubleValueTask(&_leftArmExtend_target, extendClosed));
-    domeLeftArmTaskManager.addTask(new ChangeBoolTask(&leftArmIsReady, false));
+  // check if swith is active
+  _domeLeftArmTaskManager->addTask(new DoubleValueTask(&_leftArmExtend_target, extendMin, extendMax));
+  // open door
+  _domeLeftArmTaskManager->addTask(new MoveServoTask(_pwm_dome, pwm_head_pin_arms_left_door, _leftArmDoor_min, _leftArmDoor_max, 300, 100));
+  // bring arm out
+  _domeLeftArmTaskManager->addTask(new MoveServoTask(_pwm_dome, pwm_head_pin_arms_left_extruder, _leftArmExtruder_min, _leftArmExtruder_max, 800, 500));
+  // stretch arm to current position
+  _domeLeftArmTaskManager->addTask(new ChangeBoolTask(&leftArmIsReady, true));
+  // wait here to bring left arm in and close doors
+  // check if arm is vertical
+  _domeLeftArmTaskManager->addTask(new DoubleValueTask(&_leftArmExtend_target, extendClosed));
+  _domeLeftArmTaskManager->addTask(new ChangeBoolTask(&leftArmIsReady, false));
 
-    // bring arm in
-    domeLeftArmTaskManager.addTask(new MoveServoTask(pwm_head, pwm_head_pin_arms_left_extruder, _leftArmExtruder_max, _leftArmExtruder_min, 800, 200));
-    // close door
-    domeLeftArmTaskManager.addTask(new MoveServoTask(pwm_head, pwm_head_pin_arms_left_door, _leftArmDoor_max, _leftArmDoor_min, 300, 200));
+  // bring arm in
+  _domeLeftArmTaskManager->addTask(new MoveServoTask(_pwm_dome, pwm_head_pin_arms_left_extruder, _leftArmExtruder_max, _leftArmExtruder_min, 800, 200));
+  // close door
+  _domeLeftArmTaskManager->addTask(new MoveServoTask(_pwm_dome, pwm_head_pin_arms_left_door, _leftArmDoor_max, _leftArmDoor_min, 300, 200));
 }
 
 void ChopperDome::setup()
 {
-    pwm_head.begin();
-    pwm_head.setOscillatorFrequency(27000000);
-    pwm_head.setPWMFreq(_SERVO_FREQ);
-
-    setupRightArmTools();
-    setupLeftArmTools();
+  setupRightArmTools();
+  setupLeftArmTools();
 }
 void ChopperDome::loop()
 {
-    domeRightArmTaskManager.loop();
-    domeLeftArmTaskManager.loop();
+  _domeRightArmTaskManager->loop();
+  _domeLeftArmTaskManager->loop();
 
-    rotateServoToDegree(pwm_head_pin_periscope_lift, _liftPeriscope);
-    rotateServoToDegree(pwm_head_pin_periscope_rotate, _rotationPeriscope);
-
-    if (rightArmIsReady == true)
-    {
-        if (_rightArmExtend_target >= 1200 && _rightArmExtend_target <= 2000)
-        {
-            current_extendRightArm = map(_rightArmExtend_target, 1200, 2000, _rightArmExtend_min, _rightArmExtend_max);
-            rotateServoToDegree(pwm_head_pin_arms_right_extend, current_extendRightArm);
-        }
-
-        if (_rightArmRotate_target >= 1000 && _rightArmRotate_target <= 2000)
-        {
-            current_rotateRightArm = map(_rightArmRotate_target, 1000, 2000, _rightArmRotate_min, _rightArmRotate_max);
-            rotateServoToDegree(pwm_head_pin_arms_right_rotate, current_rotateRightArm);
-        }
-    }
-
-    if (leftArmIsReady == true)
-    {
-        if (_leftArmExtend_target >= 1200 && _leftArmExtend_target <= 2000)
-        {
-            current_extendLeftArm = map(_leftArmExtend_target, 1200, 2000, _leftArmExtend_min, _leftArmExtend_max);
-            rotateServoToDegree(pwm_head_pin_arms_left_extend, current_extendLeftArm);
-        }
-
-        if (_leftArmRotate_target >= 1000 && _leftArmRotate_target <= 2000)
-        {
-            current_rotateLeftArm = map(_leftArmRotate_target, 1000, 2000, _leftArmRotate_min, _leftArmRotate_max);
-            rotateServoToDegree(pwm_head_pin_arms_left_rotate, current_rotateLeftArm);
-        }
-    }
+  rotateServoToDegree(pwm_head_pin_periscope_lift, _liftPeriscope);
+  rotateServoToDegree(pwm_head_pin_periscope_rotate, _rotationPeriscope);
 }
 void ChopperDome::setPeriscopeLift(uint8_t liftValue)
 {
-    _liftPeriscope = map(liftValue, 0, 255, _minPeriscopeLift, _maxPeriscopeLift);
+  _liftPeriscope = map(liftValue, 0, 255, _minPeriscopeLift, _maxPeriscopeLift);
 
-    if (_liftPeriscope < _minPeriscopeLift)
-    {
-        _liftPeriscope = _minPeriscopeLift;
-    }
+  if (_liftPeriscope < _minPeriscopeLift)
+  {
+    _liftPeriscope = _minPeriscopeLift;
+  }
 }
 void ChopperDome::setPeriscopeRotation(int8_t rotationValue)
 {
-    if (rotationValue >= -127 && rotationValue <= 127)
-    {
-        _rotationPeriscope = map(rotationValue, -127, 127, _minPeriscopeRotation, _maxPeriscopeRotation);
-    }
+  if (rotationValue >= -127 && rotationValue <= 127)
+  {
+    _rotationPeriscope = map(rotationValue, -127, 127, _minPeriscopeRotation, _maxPeriscopeRotation);
+  }
 }
 
 void ChopperDome::setLeftArmExtend(double extend)
 {
-    _leftArmExtend_target = extend;
+  _leftArmExtend_target = extend;
 }
 void ChopperDome::setRightArmExtend(double extend)
 {
-    _rightArmExtend_target = extend;
-}
-
-void ChopperDome::setLeftArmRotation(double rotation)
-{
-    _leftArmRotate_target = rotation;
-}
-void ChopperDome::setRightArmRotation(double rotation)
-{
-    _rightArmRotate_target = rotation;
+  _rightArmExtend_target = extend;
 }
 
 void ChopperDome::rotateServoToDegree(uint8_t servo, double degree)
 {
-    uint16_t pulselength = map(degree, 0, 180, _SERVOMIN, _SERVOMAX); //  Calibrate the positive range (see below)
-    /*
+  uint16_t pulselength = map(degree, 0, 180, _SERVOMIN, _SERVOMAX); //  Calibrate the positive range (see below)
+  /*
     Serial.print(F("rotateServoToDegree Servo: "));
     Serial.print(servo);
     Serial.print(F(" to Degree: "));
@@ -157,5 +115,5 @@ void ChopperDome::rotateServoToDegree(uint8_t servo, double degree)
     Serial.print(F(" with Pulselength: "));
     Serial.println(pulselength);
     */
-    pwm_head.setPWM(servo, 0, pulselength);
+  _pwm_dome->setPWM(servo, 0, pulselength);
 }

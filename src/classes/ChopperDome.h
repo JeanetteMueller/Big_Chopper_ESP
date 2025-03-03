@@ -24,7 +24,7 @@
 class ChopperDome
 {
 public:
-    ChopperDome(bool debug);
+    ChopperDome(Adafruit_PWMServoDriver *pwm, bool debug);
     
     void setup();
     void loop();
@@ -43,12 +43,9 @@ public:
     void setLeftArmExtend(double extend);
     void setRightArmExtend(double extend);
 
-    void setLeftArmRotation(double rotation);
-    void setRightArmRotation(double rotation);
-
 private:
     bool _debug = false;
-    Adafruit_PWMServoDriver pwm_head = Adafruit_PWMServoDriver(0x60);
+    Adafruit_PWMServoDriver *_pwm_dome;
 
     double _minPeriscopeLift = 80;
     double _maxPeriscopeLift = 165;
@@ -70,28 +67,12 @@ private:
     double _rightArmExtruder_min = 35 - 5;
     double _rightArmExtruder_max = 165 - 5;
 
-    // Rotate
-    double _rightArmRotate_min = 90;
-    double _rightArmRotate_max = 0;
-    double _rightArmRotate_doorsafe = 73;
-    double _rightArmRotate_target = 73;
-
-    double _leftArmRotate_min = 12;
-    double _leftArmRotate_max = 90;
-    double _leftArmRotate_doorsafe = 32;
-    double _leftArmRotate_target = 32;
-
     // Extend
-    double _leftArmExtend_min = 0;
-    double _leftArmExtend_max = 160;
     double _leftArmExtend_target = 0;
-
-    double _rightArmExtend_min = 160;
-    double _rightArmExtend_max = 0;
     double _rightArmExtend_target = 160;
 
-    JxTaskManager domeRightArmTaskManager = JxTaskManager();
-    JxTaskManager domeLeftArmTaskManager = JxTaskManager();
+    JxTaskManager *_domeRightArmTaskManager;
+    JxTaskManager *_domeLeftArmTaskManager;
 
     void setupRightArmTools();
     void setupLeftArmTools();

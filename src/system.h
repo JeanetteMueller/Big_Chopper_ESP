@@ -3,20 +3,10 @@
 // #include <avr/power.h>
 // #endif
 
-// #include <Wire.h>
-// #include "searchI2cPorts.h"
-
-// #ifdef ESP32
-// #include <WiFi.h>
-// #include <AsyncTCP.h>
-// #elif defined(ESP8266)
-#include <ESP8266WiFi.h>
-// #endif
+#include <Wire.h>
+#include "searchI2cPorts.h"
 
 #define SERIAL_PORT_SPEED 115200 // Define the port output serial communication speed
-
-// #include "SoftwareSerial.h"
-// #include <DFPlayerMini_Fast.h>
 
 #include "definitions.h"
 
@@ -25,277 +15,197 @@
 
 // #include "test.h"
 
-// #include "audio.h"
-
 /*
+
+// -> 06.11.2024 Outdated, should be updated
 
 5     PWM board
 4     PWM Board
-0     
+0
 2     LEDs
 14    PWM motor 1
 12    DIR motor 1
 13    PWM motor 2
 15    DIR motor 2
 3     RX RC Reciever
-1     
+1
 
 */
 
 /////////////////////////////////// SETUP ////////////////////////////////////////////////////
 void setup()
 {
-    Serial.begin(SERIAL_PORT_SPEED); // Used only for debugging on arduino serial monitor
-    Serial.println(F("Big Droid Chopper! v2.1"));
+  Serial.begin(SERIAL_PORT_SPEED); // Used only for debugging on arduino serial monitor
+  Serial.println(F("Big Droid Chopper! v2.2"));
 
-    // Wifi Settings
-    wifi->host = IPAddress(192, 168, 10, 1);
-    wifi->subnetMask = IPAddress(255, 255, 255, 0);
-    wifi->currentMode = JxWifiManager::WifiModeNetwork;
+  pwm_body->begin();
+  pwm_body->setOscillatorFrequency(27000000);
+  pwm_body->setPWMFreq(60);
 
-    // Hotspot
-    wifi->hotspot_Ssid = "ChopperWifiControl";
-    wifi->hotspot_Password = "<YOUR WIFI PASSWORD>";
+  pwm_dome->begin();
+  pwm_dome->setOscillatorFrequency(27000000);
+  pwm_dome->setPWMFreq(60);
 
-    // use Local Wifi
-    wifi->network_Ssid = "Yavin4"; // <- change if needed
-    wifi->network_Password = "29833170985536833475";
+  setupInput();
 
-    setupInput();
+  chopper->setup();
 
-    chopper->setup();
-
-    wifi->setup();
-    webServer->start();
-
-    // setupAudio();
-
-    // setupTest();
+  // setupTest();
 }
 
 // start of loop ///////////////////////////////////////////////////////////////////////
 
 void loopDriving()
 {
-    if (ibusVar00 != 0 && ibusVar01 != 0)
-    {
-        chopper->body->horizontal = ibusVar00;
-        chopper->body->vertical = ibusVar01;
-    }
-    else
-    {
-        chopper->body->horizontal = 1500;
-        chopper->body->vertical = 1500;
-    }
+  if (ibusVar00 != 0 && ibusVar01 != 0)
+  {
+    chopper->body->horizontal = ibusVar00;
+    chopper->body->vertical = ibusVar01;
+  }
+  else
+  {
+    chopper->body->horizontal = 1500;
+    chopper->body->vertical = 1500;
+  }
 }
 
 void loopDomeRotationAndPeriscope()
 {
-    // Dome & Periscope Rotation
-    if (ibusVar02 != 0 && ibusVar03 != 0)
+  // Dome & Periscope Rotation
+  if (ibusVar02 != 0 && ibusVar03 != 0)
+  {
+    if (ibusVar02 >= 1500 && ibusVar02 <= 2000)
     {
-        if (ibusVar02 >= 1500 && ibusVar02 <= 2000)
-        {
-            chopper->body->setDomeRotation(1500);
-            webServer->domeRotate = 1500;
+      chopper->body->setDomeRotation(1500);
 
-            int16_t liftPeriscope = map(ibusVar02, 1500, 2000, 0, 255);
-            chopper->dome->setPeriscopeLift(liftPeriscope);
-            webServer->domePeriscopeLift = liftPeriscope;
+      int16_t liftPeriscope = map(ibusVar02, 1500, 2000, 0, 255);
+      chopper->dome->setPeriscopeLift(liftPeriscope);
 
-            int16_t rotationPeriscope = map(ibusVar03, 1000, 2000, -127, 127);
-            chopper->dome->setPeriscopeRotation(rotationPeriscope);
-            webServer->domePeriscopeRotate = rotationPeriscope;
-        }
-        else
-        {
-            chopper->dome->setPeriscopeLift(0);
-            chopper->dome->setPeriscopeRotation(0);
-
-            chopper->body->setDomeRotation(ibusVar03);
-            webServer->domeRotate = ibusVar03;
-        }
+      int16_t rotationPeriscope = map(ibusVar03, 1000, 2000, -127, 127);
+      chopper->dome->setPeriscopeRotation(rotationPeriscope);
     }
     else
     {
-        chopper->body->setDomeRotation(webServer->domeRotate);
-        chopper->dome->setPeriscopeLift(webServer->domePeriscopeLift);
-        chopper->dome->setPeriscopeRotation(webServer->domePeriscopeRotate);
+      chopper->dome->setPeriscopeLift(0);
+      chopper->dome->setPeriscopeRotation(0);
+
+      chopper->body->setDomeRotation(ibusVar03);
     }
+  }
 }
 
 void loopDomeArmRight()
 {
-    if (ibusVar05 != 0)
-    {
-        if (ibusVar05 >= 1000 && ibusVar05 <= 2000)
-        {
-            chopper->dome->setRightArmExtend(ibusVar05);
-            chopper->dome->setRightArmRotation(ibusVar05);
-            webServer->domeArmsRightRotate = ibusVar05;
-        }
-    }
-    else
-    {
-        chopper->dome->setRightArmExtend(webServer->domeArmsRightExtend);
-        chopper->dome->setRightArmRotation(webServer->domeArmsRightRotate);
-    }
+  if (ibusVar05 >= 1000 && ibusVar05 <= 2000)
+  {
+    chopper->dome->setRightArmExtend(ibusVar05);
+  }
 }
 
 void loopDomeArmLeft()
 {
-    if (ibusVar04 != 0)
-    {
-        if (ibusVar04 >= 1000 && ibusVar04 <= 2000)
-        {
-            chopper->dome->setLeftArmExtend(ibusVar04);
-            chopper->dome->setLeftArmRotation(ibusVar04);
-            webServer->domeArmsLeftRotate = ibusVar04;
-        }
-    }
-    else
-    {
-        chopper->dome->setLeftArmExtend(webServer->domeArmsLeftExtend);
-        chopper->dome->setLeftArmRotation(webServer->domeArmsLeftRotate);
-    }
+  if (ibusVar04 >= 1000 && ibusVar04 <= 2000)
+  {
+    chopper->dome->setLeftArmExtend(ibusVar04);
+  }
 }
 
 void loopDomeShake()
 {
-    if (ibusVar07 != 0)
-    {
-        if (ibusVar07 == 2000)
-        {
-            chopper->body->domeShake = true;
-            webServer->domeShake = true;
-        }
-        else
-        {
-            chopper->body->domeShake = false;
-            webServer->domeShake = false;
-        }
-    }
-    else
-    {
-        chopper->body->domeShake = webServer->domeShake;
-    }
+  if (ibusVar07 == 2000)
+  {
+    chopper->body->domeShake = true;
+  }
+  else
+  {
+    chopper->body->domeShake = false;
+  }
 }
 
 void loopBodyToolRight()
 {
-    if (ibusVar09 != 0)
-    {
-        if (ibusVar09 >= 1500 && ibusVar09 <= 2000)
-        {
-            chopper->body->bodyArmRight = true;
-            webServer->bodyArmRight = true;
-        }
-        else
-        {
-            chopper->body->bodyArmRight = false;
-            webServer->bodyArmRight = false;
-        }
-    }
-    else
-    {
-        chopper->body->bodyArmRight = webServer->bodyArmRight;
-    }
+
+  if (ibusVar09 >= 1500 && ibusVar09 <= 2000)
+  {
+    chopper->body->bodyArmRight = true;
+  }
+  else
+  {
+    chopper->body->bodyArmRight = false;
+  }
 }
 
 void loopBodyToolLeft()
 {
-    if (ibusVar06 != 0)
-    {
-        if (ibusVar06 >= 1500 && ibusVar06 <= 2000)
-        {
-            chopper->body->bodyArmLeft = true;
-            webServer->bodyArmLeft = true;
-        }
-        else
-        {
-            chopper->body->bodyArmLeft = false;
-            webServer->bodyArmLeft = false;
-        }
-    }
-    else
-    {
-        chopper->body->bodyArmLeft = webServer->bodyArmLeft;
-    }
+  if (ibusVar06 >= 1500 && ibusVar06 <= 2000)
+  {
+    chopper->body->bodyArmLeft = true;
+  }
+  else
+  {
+    chopper->body->bodyArmLeft = false;
+  }
 }
 
 void loopBodyUtilityArm()
 {
-    if (ibusVar08 != 0)
+  if (ibusVar08 != 0)
+  {
+    if (ibusVar08 >= 1500 && ibusVar08 <= 2000)
     {
-        if (ibusVar08 >= 1500 && ibusVar08 <= 2000)
-        {
-            chopper->body->utilityArm = true;
-            webServer->utilityArm = true;
-            if (ibusVar08 == 2000)
-            {
-                chopper->body->utilityArmGripper = true;
-                webServer->utilityArmGripper = true;
-            }
-            else
-            {
-                chopper->body->utilityArmGripper = false;
-                webServer->utilityArmGripper = false;
-            }
-        }
-        else
-        {
-            chopper->body->utilityArmGripper = false;
-            webServer->utilityArmGripper = false;
+      chopper->body->utilityArm = true;
 
-            chopper->body->utilityArm = false;
-            webServer->utilityArm = false;
-        }
+      if (ibusVar08 == 2000)
+      {
+        chopper->body->utilityArmGripper = true;
+      }
+      else
+      {
+        chopper->body->utilityArmGripper = false;
+      }
     }
     else
     {
-        chopper->body->utilityArm = webServer->utilityArm;
-        if (webServer->utilityArmGripper && webServer->utilityArm)
-        {
-            chopper->body->utilityArmGripper = true;
-        }
-        else
-        {
-            chopper->body->utilityArmGripper = false;
-        }
+      chopper->body->utilityArmGripper = false;
+
+      chopper->body->utilityArm = false;
     }
+  }
 }
 
 void loopLights()
 {
-    if (ibusVar02 >= 1650 && ibusVar02 <= 2000)
-    {
-        chopper->lights->periscopeIsOn = true;
-    }
-    else
-    {
-        chopper->lights->periscopeIsOn = false;
-    }
+  if (ibusVar02 >= 1650 && ibusVar02 <= 2000)
+  {
+    chopper->lights->periscopeIsOn = true;
+  }
+  else
+  {
+    chopper->lights->periscopeIsOn = false;
+  }
 
-    if (chopper->body->bodyArmRight)
-    {
-        chopper->lights->currentMood = ChopperLights::LightsMood::terminator;
-    }
-    else
-    {
-        chopper->lights->currentMood = ChopperLights::LightsMood::basic;
-    }
+  if (chopper->body->bodyArmRight)
+  {
+    chopper->lights->currentMood = ChopperLights::LightsMood::terminator;
+  }
+  else
+  {
+    chopper->lights->currentMood = ChopperLights::LightsMood::basic;
+  }
 }
+
+bool i2cSetupIsDone = false;
 
 void loop()
 {
-    // searchI2CPorts2();
-    // return;
+  // Serial.println(F("Main Loop"));
 
-    wifi->loop();
+  if (i2cSetupIsDone)
+  {
 
     loopInput();
 
-    // debugInput();
+    debugInput();
 
     loopDriving();
 
@@ -313,14 +223,19 @@ void loop()
     // Do Main Loop
     chopper->loop();
 
-    // loopAudio();
-    // Serial.print( stack_unused() ); Serial.print(F(" -> ")); Serial.println( stack_free() );
-
     // testTaskManager.loop();
 
     // Serial.print("globalBool is: ");
     // // bool globalBoolValue = *globalBool;
     // Serial.println(globalBool == true ? "-----------------true" : "-----------------false");
+  }
+  else
+  {
+    if (searchI2CPorts2())
+    {
+      i2cSetupIsDone = true;
+    }
+  }
 }
 
 // end of loop ///////////////////////////////////////////////////////////////////////////////////////////

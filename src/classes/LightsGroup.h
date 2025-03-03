@@ -13,8 +13,8 @@ public:
 
 private:
     Adafruit_NeoPixel *_neoPixelLights;
-    uint16_t _startIndex;
-    uint16_t _ledCount;
+    uint16_t _startIndex = 0;
+    uint16_t _ledCount = 0;
 };
 
 #endif

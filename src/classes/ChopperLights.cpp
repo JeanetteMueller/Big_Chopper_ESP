@@ -10,12 +10,9 @@ ChopperLights::ChopperLights(byte pin, uint16_t brightness, bool debug)
 
 void ChopperLights::setup()
 {
-    if (!_debug)
-    {
-        _neoPixelLights = new Adafruit_NeoPixel(_ledsCount, _pin, pixelFormat);
-        _neoPixelLights->setBrightness(_brightness);
-        _neoPixelLights->begin();
-    }
+    _neoPixelLights = new Adafruit_NeoPixel(_ledsCount, _pin, pixelFormat);
+    _neoPixelLights->setBrightness(_brightness);
+    _neoPixelLights->begin();
 
     _bodyBack = new LightsGroup(_neoPixelLights, 0, 1);
     _bodyFront = new LightsGroup(_neoPixelLights, 1, 1);
@@ -174,9 +171,6 @@ void ChopperLights::prepareLights()
 
 void ChopperLights::loop()
 {
-    if (!_debug)
-    {
-        prepareLights();
-        _neoPixelLights->show();
-    }
+    prepareLights();
+    _neoPixelLights->show();
 }

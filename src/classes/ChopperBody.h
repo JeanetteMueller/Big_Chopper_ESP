@@ -24,77 +24,76 @@
 #define pwm_body_pin_utilityarm (byte)14
 #define pwm_body_pin_domeShake (byte)15
 
-class ChopperBody
-{
+class ChopperBody {
 public:
-    ChopperBody(bool debug);
-    
-    void setup();
-    void loop();
+  ChopperBody(Adafruit_PWMServoDriver *pwm, bool debug);
 
-    int16_t horizontal = 0;
-    int16_t vertical = 0;
+  void setup();
+  void loop();
 
-    void setDomeRotation(int16_t rotation);
+  int16_t horizontal = 0;
+  int16_t vertical = 0;
 
-    bool bodyArmLeft = false;
-    bool bodyArmRight = false;
-    bool domeShake = false;
-    bool utilityArm = false;
-    bool utilityArmGripper = false;
+  void setDomeRotation(int16_t rotation);
+
+  bool bodyArmLeft = false;
+  bool bodyArmRight = false;
+  bool domeShake = false;
+  bool utilityArm = false;
+  bool utilityArmGripper = false;
 
 private:
-    bool _debug = false;
+  bool _debug = false;
 
-    Adafruit_PWMServoDriver pwm_body = Adafruit_PWMServoDriver(0x40);
+  Adafruit_PWMServoDriver *_pwm_body;
 
-    JxTankDriver *drive = new JxTankDriver(1000, 2000, 1500);
-    
-    JxDomeRotation *domeRotation = new JxDomeRotation(1000, 2000, 1500);
+  JxTankDriver *_drive;
 
-    JxTaskManager domeShakeTaskManager = JxTaskManager();
-    void setupDomeShake();
+  JxDomeRotation *_domeRotation;
 
-    int16_t _rotation = 0;
-    int16_t _domeRotateSpeed = 1500;
+  JxTaskManager *_domeShakeTaskManager;
 
-    // Left
-    double default_door_left = 15;
-    double max_door_left = 82;
-    double default_toollift_left = 70;
-    double max_toollift_left = 20;
-    double default_action_left = 10;
-    double max_action_left = 120;
+  void setupDomeShake();
 
-    JxTaskManager bodyLeftArmTaskManager = JxTaskManager();
-    void setupLeftBodyArm();
+  int16_t _rotation = 1500;
 
-    // Right
-    double default_door_right = 120;
-    double max_door_right = 15;
-    double default_toollift_right = 10;
-    double max_toollift_right = 50;
-    double default_action_right = 67;
-    double max_action_right = 140;
-    JxTaskManager bodyRightArmTaskManager = JxTaskManager();
-    void setupRightBodyArm();
+  // Left
+  double _default_door_left = 19;
+  double _max_door_left = 89;
+  double _default_toollift_left = 78;
+  double _max_toollift_left = 28;
+  double _default_action_left = 15;
+  double _max_action_left = 120;
 
-    double default_utility_arm = 0;
-    double max_utility_arm = 100;
-    JxTaskManager bodyUtilityArmTaskManager = JxTaskManager();
-    void setupUtilityArm();
+  JxTaskManager *_bodyLeftArmTaskManager;
+  void setupLeftBodyArm();
 
-    double default_utility_gripper = 120;
-    double max_utility_gripper = 30;
-    JxTaskManager bodyUtilityArmGripperTaskManager = JxTaskManager();
-    void setupUtilityGripper();
+  // Right
+  double _default_door_right = 123;
+  double _max_door_right = 10;
+  double _default_toollift_right = 11;
+  double _max_toollift_right = 50;
+  double _default_action_right = 57;
+  double _max_action_right = 90;
+  JxTaskManager *_bodyRightArmTaskManager;
+  void setupRightBodyArm();
 
-    // Servo Parameters
-    uint16_t _SERVOMIN = 150;  // This is the 'minimum' pulse length count (out of 4096)
-    uint16_t _SERVOMAX = 595;  // This is the 'maximum' pulse length count (out of 4096)
-    uint16_t _SERVO_FREQ = 60; // Analog servos run at ~50 Hz updates
+  double _default_utility_arm = 0;
+  double _max_utility_arm = 100;
+  JxTaskManager *_bodyUtilityArmTaskManager;
+  void setupUtilityArm();
 
-    void rotateServoToDegree(uint8_t servo, double degree);
+  double _default_utility_gripper = 120;
+  double _max_utility_gripper = 30;
+  JxTaskManager *_bodyUtilityArmGripperTaskManager;
+  void setupUtilityGripper();
+
+  // Servo Parameters
+  uint16_t _SERVOMIN = 150;   // This is the 'minimum' pulse length count (out of 4096)
+  uint16_t _SERVOMAX = 595;   // This is the 'maximum' pulse length count (out of 4096)
+  uint16_t _SERVO_FREQ = 60;  // Analog servos run at ~50 Hz updates
+
+  void rotateServoToDegree(uint8_t servo, double degree);
 };
 
 #endif
